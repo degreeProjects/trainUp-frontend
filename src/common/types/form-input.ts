@@ -6,7 +6,6 @@ export interface UploadPostDto {
   restaurant: string;
   description: string;
   picture?: File;
-  city: string;
 }
 
 export interface PostToEdit extends UploadPostDto {
