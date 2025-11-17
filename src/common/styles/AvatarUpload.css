@@ -1,0 +1,22 @@
+input[type="file"] {
+    display: none;
+}
+
+.avatar-upload-container {
+    display:flex;
+    flex-flow:column;
+    align-items: center;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.img-container {
+    border-radius: 10rem;
+    border: 0.2rem solid black;
+    img {
+        display: block;
+        border-radius: 10rem;
+    }
+}
