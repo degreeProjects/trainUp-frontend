@@ -1,6 +1,6 @@
 import { Dialog, DialogTitle } from "@mui/material";
 import type { PostToEdit, UploadPostDto } from "../common/types";
-import PostForm from "../components/PostForm";
+import PostForm from "../components/forms/PostForm";
 import postsService from "../services/postService";
 
 interface Props {

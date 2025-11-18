@@ -5,5 +5,6 @@ export const config = {
   defaultPageSize: +env.VITE_DEFAULT_PAGE_SIZE,
   uploadFolderUrl: env.VITE_UPLOAD_FOLDER_URL,
   publicFolderUrl: env.VITE_PUBLIC_FOLDER_URL,
+  citiesApiUrl: env.VITE_CITIES_API_URL,
   googleClientId: env.VITE_GOOGLE_CLIENT_ID,
 };

@@ -3,7 +3,6 @@ import {
   Box,
   Card,
   CardContent,
-  CardMedia,
   Stack,
   Tooltip,
   Typography,
@@ -53,55 +52,10 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           onExpandClick={showPostComments}
           onEditClick={() => openEditPostDialog(post)}
         />
-        <CardMedia
-          title={post.restaurant}
-          sx={{
-            height: "25vh",
-            position: "relative",
-          }}
-        >
-          <Box
-            component="img"
-            src={config.uploadFolderUrl + post.image}
-            alt={post.restaurant}
-            sx={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              filter: "blur(10px)",
-              transform: "scale(1.1)",
-              pointerEvents: "none",
-            }}
-          />
-          <Box
-            component="img"
-            src={config.uploadFolderUrl + post.image}
-            alt={post.restaurant}
-            sx={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              pointerEvents: "none",
-            }}
-          />
-        </CardMedia>
         <CardContent sx={{ mt: 2 }}>
           <Stack>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ display: "flex" }}>
-                <Typography
-                  variant="h6"
-                  color="white"
-                  sx={{
-                    fontWeight: "bold",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 0.5,
-                  }}
-                >
-                  {post.restaurant}
-                </Typography>
                 <Tooltip title={post.user.fullName} placement="top">
                   <Avatar
                     src={
@@ -137,6 +91,9 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           </Stack>
           <Grid container>
             <Grid item md={10} height="10vh">
+              <Typography variant="body2" color="white">
+                {post.city}
+              </Typography>
               <Typography
                 variant="body1"
                 color="white"

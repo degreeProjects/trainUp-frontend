@@ -6,6 +6,7 @@ import Post from "./Post";
 import postsService from "../../services/postService";
 import type { IPost, PostToEdit } from "../../common/types";
 import userStore from "../../common/store/user.store";
+import SelectCity from "../../components/SelectCity";
 import { observer } from "mobx-react-lite";
 import { fetchImageAndConvertToFile } from "../../common/utils/fetch-image";
 
@@ -14,40 +15,41 @@ const Explore = observer(() => {
   const [isShowOnlyMyPosts, setIsShowOnlyMyPosts] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [page, setPage] = useState(1);
+  const [selectedCity, setSelectedCity] = useState("");
   const scrolledElementRef = useRef<HTMLDivElement | null>(null);
   const [openEditPostDialog, setOpenEditPostDialog] = useState(false);
   const [postToEdit, setPostToEdit] = useState<PostToEdit>();
 
   useEffect(() => {
-    //TODO
+    setSelectedCity(user?.homeCity ?? "");
   }, [user]);
 
   useEffect(() => {
     setPosts([]);
     setPage(1);
     scrolledElementRef.current!.scrollTop = 0;
-  }, [isShowOnlyMyPosts]);
+  }, [selectedCity, isShowOnlyMyPosts]);
 
   useEffect(() => {
     console.log(posts);
     const postsRequest = determinePostsRequest();
     const { request, cancel } = postsRequest();
     request
-      .then((res) => {
+      .then((res: any) => {
         if (page === 1) {
           setPosts(res.data);
         } else {
           setPosts((prevPosts) => [...prevPosts, ...res.data]);
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log(err);
       });
 
     return () => {
       cancel();
     };
-  }, [page, isShowOnlyMyPosts]);
+  }, [page, selectedCity, isShowOnlyMyPosts]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,7 +85,7 @@ const Explore = observer(() => {
       };
     } else {
       return () => {
-        return postsService.getByUser(page);
+        return postsService.getByCity(selectedCity, page);
       };
     }
   };
@@ -96,10 +98,10 @@ const Explore = observer(() => {
       const postsRequest = determinePostsRequest();
       const { request } = postsRequest();
       request
-        .then((res) => {
+        .then((res: any) => {
           if (res.data.length) setPosts(res.data);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
         });
     }
@@ -110,7 +112,7 @@ const Explore = observer(() => {
 
     setPostToEdit({
       picture,
-      restaurant: post.restaurant,
+      city: post.city,
       description: post.description,
       postId: post._id,
     });
@@ -136,6 +138,13 @@ const Explore = observer(() => {
               sx={{ my: "auto" }}
             />
           </Box>
+          {!isShowOnlyMyPosts && (
+            <SelectCity
+              city={selectedCity}
+              setCity={setSelectedCity}
+              sx={{ width: "20vw", height: "5vh" }}
+            />
+          )}
         </Stack>
         <Grid
           container
