@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Stack, Typography } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { observer } from "mobx-react-lite";
-import userStore from "../common/store/user.store";
-import { config } from "../config";
+import userStore from "../../common/store/user.store";
+import { config } from "../../config";
 
 const Profile = observer(() => {
   const { user } = userStore;
