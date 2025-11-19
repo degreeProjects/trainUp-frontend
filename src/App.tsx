@@ -1,10 +1,12 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import Register from "./pages/register/Register";
 import RequireAuth from "./components/RequireAuth";
 import Layout from "./components/Layout";
 import Explore from "./pages/explore/Explore";
-import Register from "./pages/register/Register";
+import Comments from "./pages/comments/Comments";
+// import UploadPost from "./pages/UploadPost";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
 import NotFound from "./pages/NotFound";
@@ -16,6 +18,8 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<RequireAuth children={<Layout />} />}>
         <Route index element={<Explore />} />
+        <Route path="comments/:postId" element={<Comments />} />
+        {/* <Route path="upload" element={<UploadPost />} /> */}
         <Route path="profile">
           <Route index element={<Profile />} />
           <Route path="edit" element={<EditProfile />} />
