@@ -5,6 +5,7 @@ import RequireAuth from "./components/RequireAuth";
 import Layout from "./components/Layout";
 import Explore from "./pages/explore/Explore";
 import Register from "./pages/register/Register";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<RequireAuth children={<Layout />} />}>
         <Route index element={<Explore />} />
+        <Route path="profile">
+          <Route index element={<Profile />} />
+        </Route>
       </Route>
     </Routes>
   );
