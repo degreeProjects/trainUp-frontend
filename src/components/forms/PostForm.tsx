@@ -1,6 +1,5 @@
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import {
-  InputAdornment,
   TextField,
   Button,
   IconButton,
@@ -8,18 +7,18 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { type ChangeEvent, useState, useRef } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { config } from "../config";
-import type { PostFormInput, UploadPostDto } from "../common/types";
+import { config } from "../../config";
+import type { PostFormInput, UploadPostDto } from "../../common/types";
+import ValidatedSelectCity from "./ValidatedSelectCity";
 
 const schema = yup.object({
-  restaurant: yup.string().required("restaurant is required"),
   description: yup.string().required("description is required"),
+  city: yup.string().required("city is required"),
 });
 
 interface Props {
@@ -42,8 +41,8 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
     formState: { errors, isSubmitted },
   } = useForm<PostFormInput>({
     values: {
-      restaurant: uploadPostDto.restaurant,
       description: uploadPostDto.description,
+      city: uploadPostDto.city,
     },
     resolver: yupResolver(schema),
   });
@@ -144,27 +143,9 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
             </Typography>
           )}
         </Stack>
-        <Controller
-          name="restaurant"
+        <ValidatedSelectCity
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.restaurant}
-              fullWidth
-              label="restaurant"
-              placeholder="restaurant Name"
-              helperText={errors.restaurant?.message}
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <RestaurantMenuOutlinedIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
+          sx={{ height: "5vh", width: "30vw" }}
         />
         <Controller
           name="description"

@@ -36,6 +36,24 @@ class PostsService {
     return { request, cancel: () => controller.abort() };
   }
 
+  getByCity(
+    city: string,
+    page: number = 1,
+    pageSize: number = config.defaultPageSize
+  ) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(
+      `${this.endpoint}/city/${
+        city ? city : "all"
+      }?page=${page}&pageSize=${pageSize}`,
+      {
+        signal: controller.signal,
+      }
+    );
+
+    return { request, cancel: () => controller.abort() };
+  }
+
   addCommentToPost(
     addCommentDto: { body: string; date: Date },
     postId: string
