@@ -6,6 +6,7 @@ import {
   TextField,
   InputAdornment,
   Stack,
+  Box,
 } from "@mui/material";
 import HorizontalLineWithText from "../components/HorizontalLineWithText";
 import authService from "../services/authService";
@@ -16,6 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 interface LoginFormInput {
   email: string;
@@ -78,9 +80,12 @@ function Login() {
         gap: 5,
       }}
     >
-      <Typography variant="h2" sx={{ fontWeight: "bold", mb: 5 }}>
-        Welcome To Yummy Food Community
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
+        <Typography variant="h2" sx={{ fontWeight: "bold", mr: 2.5 }}>
+          Welcome To TrainUp
+        </Typography>
+        <FitnessCenterIcon sx={{ fontSize: "3.8rem" }} />
+      </Box>
       <form onSubmit={handleSubmit(login)} style={{ width: "80%" }}>
         <Stack spacing={4} alignItems="center">
           <Controller

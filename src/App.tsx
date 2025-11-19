@@ -6,7 +6,7 @@ import RequireAuth from "./components/RequireAuth";
 import Layout from "./components/Layout";
 import Explore from "./pages/explore/Explore";
 import Comments from "./pages/comments/Comments";
-// import UploadPost from "./pages/UploadPost";
+import UploadPost from "./pages/UploadPost";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
 import NotFound from "./pages/NotFound";
@@ -19,7 +19,7 @@ function App() {
       <Route path="/" element={<RequireAuth children={<Layout />} />}>
         <Route index element={<Explore />} />
         <Route path="comments/:postId" element={<Comments />} />
-        {/* <Route path="upload" element={<UploadPost />} /> */}
+        <Route path="upload" element={<UploadPost />} />
         <Route path="profile">
           <Route index element={<Profile />} />
           <Route path="edit" element={<EditProfile />} />
