@@ -7,6 +7,7 @@ import {
   InputAdornment,
   Stack,
   Box,
+  Paper,
 } from "@mui/material";
 import HorizontalLineWithText from "../components/HorizontalLineWithText";
 import authService from "../services/authService";
@@ -71,108 +72,123 @@ function Login() {
   return (
     <Stack
       sx={{
-        p: 10,
-        textAlign: "center",
-        width: "60%",
-        mx: "auto",
-        justifyContent: "space-between",
+        minHeight: "100vh",
+        justifyContent: "center",
         alignItems: "center",
-        gap: 5,
+        background: "linear-gradient(to bottom right, #0d47a1, #1976d2)",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
-        <Typography variant="h2" sx={{ fontWeight: "bold", mr: 2.5 }}>
-          Welcome To TrainUp
-        </Typography>
-        <FitnessCenterIcon sx={{ fontSize: "3.8rem" }} />
-      </Box>
-      <form onSubmit={handleSubmit(login)} style={{ width: "80%" }}>
-        <Stack spacing={4} alignItems="center">
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                error={!!errors.email}
-                fullWidth
-                label="email"
-                sx={{ width: "60%", mx: "auto" }}
-                placeholder="email"
-                helperText={errors.email?.message}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailOutlinedIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                error={!!errors.password}
-                fullWidth
-                label="password"
-                sx={{ width: "60%", mx: "auto" }}
-                placeholder="password"
-                type="password"
-                helperText={errors.password?.message}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockOutlinedIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-          <Button
-            variant="contained"
-            type="submit"
-            sx={{
-              color: "white",
-              backgroundColor: "primary.main",
-              ":hover": { backgroundColor: "primary.main" },
-              width: "25vw",
-              height: "6vh",
-              mt: 3,
-              mx: "auto",
-            }}
-          >
-            Login
-          </Button>
-          {serverError && (
-            <Typography variant="body1" color="error" fontWeight="bold">
-              {serverError}
-            </Typography>
-          )}
-        </Stack>
-      </form>
-      <HorizontalLineWithText text="OR" />
-      <Button
-        variant="contained"
-        onClick={register}
+      <Paper
+        elevation={15}
         sx={{
-          color: "white",
-          backgroundColor: "black",
-          ":hover": { backgroundColor: "black" },
-          width: "25vw",
-          height: "6vh",
-          mx: "auto",
+          width: "80%",
+          maxWidth: 550,
+          borderRadius: 4,
+          p: 6,
+          textAlign: "center",
+          bgcolor: "white",
         }}
       >
-        New to this website? Join Now
-      </Button>
-      <GoogleAuth />
+        <Box display="flex" alignItems="center" justifyContent="center" mb={4}>
+          <Typography variant="h3" sx={{ fontWeight: "800", mr: 1 }}>
+            TrainUp
+          </Typography>
+          <FitnessCenterIcon sx={{ fontSize: "3rem", color: "primary.main" }} />
+        </Box>
+
+        <Typography variant="h5" sx={{ mb: 4, fontWeight: 500 }}>
+          Login to Your Account
+        </Typography>
+
+        <form onSubmit={handleSubmit(login)}>
+          <Stack spacing={3}>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Email"
+                  fullWidth
+                  variant="outlined"
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailOutlinedIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="password"
+                  label="Password"
+                  fullWidth
+                  variant="outlined"
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlinedIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                py: 1.5,
+                fontSize: "1.1rem",
+                fontWeight: "bold",
+              }}
+            >
+              Login
+            </Button>
+
+            {serverError && (
+              <Typography color="error" fontWeight="bold" textAlign="center">
+                {serverError}
+              </Typography>
+            )}
+          </Stack>
+        </form>
+
+        <Box mt={4}>
+          <HorizontalLineWithText text="OR" />
+        </Box>
+
+        <Button
+          variant="outlined"
+          onClick={register}
+          sx={{
+            mt: 2,
+            width: "100%",
+            borderRadius: 2,
+            py: 1.4,
+            fontWeight: "bold",
+          }}
+        >
+          Create a New Account
+        </Button>
+
+        <Box mt={3} display="flex" justifyContent="center">
+          <GoogleAuth />
+        </Box>
+      </Paper>
     </Stack>
   );
 }
