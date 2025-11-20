@@ -18,7 +18,7 @@ function Register() {
         justifyContent: "space-between",
         alignItems: "center",
         background:
-          "linear-gradient(180deg, #ffffff 0%, #e0f7ff 50%, #a0e0ff 100%)",
+          "linear-gradient(180deg, #ffffff 0%, #e0f7ff 50%, #0d47a1 100%)",
         p: 3,
       }}
     >
