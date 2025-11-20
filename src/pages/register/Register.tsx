@@ -70,7 +70,7 @@ function Register() {
           Already have an account?
         </Typography>
         <Button onClick={signIn} sx={{ textTransform: "none" }}>
-          <Typography variant="body1" sx={{ color: "primary.main" }}>
+          <Typography variant="body1" sx={{ color: "white" }}>
             Sign in
           </Typography>
         </Button>
