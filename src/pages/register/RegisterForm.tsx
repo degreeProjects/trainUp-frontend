@@ -79,8 +79,8 @@ const RegisterForm = observer(() => {
         <ProfileAvatarInput
           changeProfileImage={setProfileImage}
           profileImage={profileImage}
-          width={200}
-          height={200}
+          width={180}
+          height={180}
         />
         <Controller
           name="email"
@@ -139,7 +139,7 @@ const RegisterForm = observer(() => {
               fullWidth
               label="fullName"
               sx={{ width: "30vw" }}
-              placeholder="email"
+              placeholder="fullName"
               helperText={errors.fullName?.message}
               variant="outlined"
               InputProps={{
@@ -157,7 +157,7 @@ const RegisterForm = observer(() => {
           control={control}
           render={({ field, formState: { errors } }) => (
             <Autocomplete
-              style={{ marginBottom: 10, width: "30vw" }}
+              style={{ marginBottom: 10, width: "100%" }}
               {...field}
               options={cities}
               renderInput={(params) => (
@@ -175,9 +175,12 @@ const RegisterForm = observer(() => {
                       </InputAdornment>
                     ),
                   }}
+                  fullWidth
                 />
               )}
               sx={{
+                width: "100%",
+                mb: 2,
                 "& .MuiOutlinedInput-root": {
                   pl: 1.75,
                   pt: 1,

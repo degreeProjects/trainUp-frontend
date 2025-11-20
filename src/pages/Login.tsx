@@ -109,6 +109,7 @@ function Login() {
                 <TextField
                   {...field}
                   label="Email"
+                  placeholder="Enter your email"
                   fullWidth
                   variant="outlined"
                   error={!!errors.email}
@@ -132,6 +133,7 @@ function Login() {
                   {...field}
                   type="password"
                   label="Password"
+                  placeholder="Enter your password"
                   fullWidth
                   variant="outlined"
                   error={!!errors.password}

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Grid, Typography, Stack, Button, Box } from "@mui/material";
+import { Stack, Typography, Button, Box, Paper } from "@mui/material";
 import RegisterForm from "./RegisterForm";
-import { config } from "../../config";
 
 function Register() {
   const navigate = useNavigate();
@@ -11,81 +10,72 @@ function Register() {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        background:
+          "linear-gradient(180deg, #ffffff 0%, #e0f7ff 50%, #0d47a1 100%)",
+        p: 3,
+      }}
+    >
       <Typography
-        variant="h2"
+        variant="h3"
         sx={{
           fontWeight: "bold",
-          position: "absolute",
-          left: 50,
-          top: 10,
-          zIndex: "50",
+          mt: 2,
+          textAlign: "center",
         }}
       >
-        TrainUp
+        Welcome to TrainUp
       </Typography>
-      <Typography
-        variant="h4"
+
+      <Paper
+        elevation={6}
         sx={{
-          width: "40vw",
-          fontWeight: "bold",
-          position: "absolute",
-          left: 50,
-          bottom: 300,
-          zIndex: "50",
+          width: "100%",
+          maxWidth: 550,
+          p: 4,
+          borderRadius: 4,
+          mt: 2,
+          backgroundColor: "white",
+          textAlign: "center",
+          boxSizing: "border-box",
         }}
       >
-        TrainUp is the place to share training experiences with your friends.
-      </Typography>
-      <Grid container sx={{ height: "100vh" }}>
-        <Grid
-          item
-          md={7}
+        <Typography variant="subtitle1" sx={{ mb: 3, color: "text.secondary" }}>
+          Share your training experiences with friends
+        </Typography>
+        <Box
           sx={{
-            backgroundImage: `url(${config.publicFolderUrl}enjoy-food.jpg)`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: "0.8",
-            minHeight: "100vh",
-            maxHeight: "100vh",
+            width: "100%",
+            "& .MuiFormControl-root": { width: "100%" },
           }}
-        />
-        <Grid item md={5} sx={{ p: 6 }}>
-          <Stack sx={{ position: "relative" }}>
-            <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-              Create an account
-            </Typography>
-            <Typography variant="subtitle1" sx={{ color: "secondary.main" }}>
-              Let’s get started
-            </Typography>
-            <Stack sx={{ mt: 6, alignItems: "center" }} spacing={3}>
-              <RegisterForm />
-            </Stack>
-          </Stack>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ color: "secondary.main" }}>
-              Already have an account?
-            </Typography>
-            <Button onClick={signIn}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: "primary.main", ml: 1 }}
-              >
-                Sign in
-              </Typography>
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
-    </>
+        >
+          <RegisterForm />
+        </Box>
+      </Paper>
+
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={1}
+        sx={{ mb: 5, mt: 2 }}
+      >
+        <Typography variant="body1" sx={{ color: "text.secondary" }}>
+          Already have an account?
+        </Typography>
+        <Button onClick={signIn} sx={{ textTransform: "none" }}>
+          <Typography variant="body1" sx={{ color: "white" }}>
+            Sign in
+          </Typography>
+        </Button>
+      </Stack>
+    </Box>
   );
 }
 
