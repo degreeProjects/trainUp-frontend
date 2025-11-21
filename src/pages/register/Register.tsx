@@ -12,7 +12,7 @@ function Register() {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -20,6 +20,7 @@ function Register() {
         background:
           "linear-gradient(180deg, #ffffff 0%, #e0f7ff 50%, #0d47a1 100%)",
         p: 3,
+        overflowY: "auto",
       }}
     >
       <Typography
