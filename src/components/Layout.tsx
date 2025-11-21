@@ -10,7 +10,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import FoodIcon from "@mui/icons-material/Fastfood";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { observer } from "mobx-react-lite";
 import NavButton from "./NavButton";
 import type { LinkItem } from "../common/types";
@@ -68,62 +68,130 @@ const Layout = observer(() => {
   };
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <FoodIcon sx={{ color: "white" }} />
-          <Typography variant="h6" component="div" color={"white"} ml={1}>
-            Yummy
+  <>
+    <AppBar
+      position="static"
+      sx={{
+        background: "linear-gradient(90deg, #0d47a1 0%, #1976d2 100%)",
+        boxShadow: 3,
+      }}
+    >
+      <Toolbar
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 3,
+        }}
+      >
+        
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <FitnessCenterIcon sx={{ color: "white", fontSize: 30 }} />
+
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 600,
+              color: "white",
+              letterSpacing: 0.5,
+            }}
+          >
+            TrainUp
           </Typography>
-          <Box sx={{ flexGrow: 1 }}>
-            {pages.map((page) => (
-              <NavButton path={page.path} title={page.title} key={page.title} />
+        </Box>
+
+        
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            justifyContent: "flex-start",
+            ml: 4,
+            gap: 2,
+          }}
+        >
+          {pages.map((page) => (
+            <NavButton
+              key={page.title}
+              path={page.path}
+              title={page.title}
+            />
+          ))}
+        </Box>
+
+        <Box sx={{ flexGrow: 0 }}>
+          <IconButton
+            onClick={openUserMenu}
+            sx={{
+              p: 0,
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "0.15s",
+              },
+            }}
+          >
+            <Avatar
+              src={
+                user?.profileImage
+                  ? config.uploadFolderUrl + user.profileImage
+                  : config.publicFolderUrl + "profile.png"
+              }
+              sx={{
+                width: 40,
+                height: 40,
+                border: "2px solid rgba(255,255,255,0.7)",
+              }}
+            />
+          </IconButton>
+
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            sx={{ mt: "45px" }}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            open={Boolean(anchorElUser)}
+            onClose={closeUserMenu}
+          >
+            {settings.map((setting) => (
+              <MenuItem
+                key={setting.title}
+                onClick={() => {
+                  setting.callback && setting.callback();
+                  selectMenuOption(setting.path);
+                }}
+                sx={{
+                  px: 3,
+                  py: 1.5,
+                  "&:hover": { bgcolor: "primary.light", color: "white" },
+                }}
+              >
+                <Typography textAlign="center" sx={{ fontWeight: 500 }}>
+                  {setting.title}
+                </Typography>
+              </MenuItem>
             ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={openUserMenu} sx={{ p: 0 }}>
-              <Avatar
-                src={
-                  user?.profileImage
-                    ? config.uploadFolderUrl + user.profileImage
-                    : config.publicFolderUrl + "profile.png"
-                }
-              />
-            </IconButton>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={closeUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting.title}
-                  onClick={() => {
-                    setting.callback && setting.callback();
-                    selectMenuOption(setting.path);
-                  }}
-                >
-                  <Typography textAlign="center">{setting.title}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Outlet />
-    </>
-  );
+          </Menu>
+        </Box>
+      </Toolbar>
+    </AppBar>
+
+    <Outlet />
+  </>
+);
+
 });
 
 export default Layout;
