@@ -3,6 +3,7 @@ export interface IPost {
   description: string;
   image: string;
   city: string;
+  type: string;
   user: IUser;
   comments: Array<IComment>;
   createdAt: string;

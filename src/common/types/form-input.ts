@@ -6,6 +6,7 @@ export interface UploadPostDto {
   description: string;
   picture?: File;
   city: string;
+  type: string;
 }
 
 export interface PostToEdit extends UploadPostDto {
@@ -23,6 +24,7 @@ export interface RegisterDto {
 export interface PostFormInput {
   description: string;
   city: string;
+  type: string;
 }
 
 export interface EditProfileFormInput {

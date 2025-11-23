@@ -113,6 +113,7 @@ const Explore = observer(() => {
     setPostToEdit({
       picture,
       city: post.city,
+      type: post.type,
       description: post.description,
       postId: post._id,
     });

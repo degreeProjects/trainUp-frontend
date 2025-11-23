@@ -30,6 +30,7 @@ function UploadPost() {
         uploadPostDto={{
           description: "",
           city: "",
+          type: "",
           picture: undefined,
         }}
         submitText="Upload Post"

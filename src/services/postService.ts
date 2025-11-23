@@ -106,6 +106,14 @@ class PostsService {
 
     return { request, cancel: () => controller.abort() };
   }
+
+  getTrainingTypes() {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(`${this.endpoint}/training/types`, {
+      signal: controller.signal,
+    });
+    return { request, cancel: () => controller.abort() };
+  }
 }
 
 const postsService = new PostsService();
