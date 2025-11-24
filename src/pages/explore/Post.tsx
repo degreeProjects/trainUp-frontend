@@ -50,7 +50,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           position: "relative",
           borderRadius: 2,
           overflow: "hidden",
-          height: "100%",
+          height: "27vh",
         }}
       >
         <PostActions

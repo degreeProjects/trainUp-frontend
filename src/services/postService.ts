@@ -36,16 +36,17 @@ class PostsService {
     return { request, cancel: () => controller.abort() };
   }
 
-  getByCity(
-    city: string,
+  getByCityAndType(
+    selectedCity: string,
+    selectedType: string,
     page: number = 1,
     pageSize: number = config.defaultPageSize
   ) {
     const controller = new AbortController();
+    const city = selectedCity ? selectedCity : "all";
+    const type = selectedType ? selectedType : "all";
     const request = apiClientWithAuth.get(
-      `${this.endpoint}/city/${
-        city ? city : "all"
-      }?page=${page}&pageSize=${pageSize}`,
+      `${this.endpoint}/search/cityAndType/?city=${city}&type=${type}&page=${page}&pageSize=${pageSize}`,
       {
         signal: controller.signal,
       }
