@@ -8,18 +8,18 @@ import {
   Typography,
 } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import ProfileAvatarInput from "../../components/ProfileAvatarInput";
+import ProfileAvatarInput from "../components/ProfileAvatarInput";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
-import usersService from "../../services/userService";
-import userStore from "../../common/store/user.store";
-import { fetchImageAndConvertToFile } from "../../common/utils/fetch-image";
+import usersService from "../services/userService";
+import userStore from "../common/store/user.store";
+import { fetchImageAndConvertToFile } from "../common/utils/fetch-image";
 import * as yup from "yup";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { type EditProfileFormInput } from "../../common/types";
-import citiesStore from "../../common/store/cities.store";
+import { type EditProfileFormInput } from "../common/types";
+import citiesStore from "../common/store/cities.store";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
 const schema = yup.object({
@@ -67,14 +67,14 @@ const EditProfile = observer(() => {
     try {
       const res = await editProfileRequest;
       setUser(res.data);
-      navigate("/profile");
+      navigate("/");
     } catch (err) {
       console.error(err);
     }
   };
 
   const cancelEdit = () => {
-    navigate("/profile");
+    navigate("/");
   };
 
   return (
