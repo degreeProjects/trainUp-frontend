@@ -5,30 +5,26 @@ import EditPostDialog from "../EditPost";
 import Post from "./Post";
 import postsService from "../../services/postService";
 import type { IPost, PostToEdit } from "../../common/types";
-import userStore from "../../common/store/user.store";
 import SelectCity from "../../components/SelectCity";
+import SelectTrainingType from "../../components/SelectTrainingType";
 import { observer } from "mobx-react-lite";
 import { fetchImageAndConvertToFile } from "../../common/utils/fetch-image";
 
 const Explore = observer(() => {
-  const { user } = userStore;
   const [isShowOnlyMyPosts, setIsShowOnlyMyPosts] = useState(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [page, setPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState("");
+  const [selectedType, setSelectedType] = useState("");
   const scrolledElementRef = useRef<HTMLDivElement | null>(null);
   const [openEditPostDialog, setOpenEditPostDialog] = useState(false);
   const [postToEdit, setPostToEdit] = useState<PostToEdit>();
 
   useEffect(() => {
-    setSelectedCity(user?.homeCity ?? "");
-  }, [user]);
-
-  useEffect(() => {
     setPosts([]);
     setPage(1);
     scrolledElementRef.current!.scrollTop = 0;
-  }, [selectedCity, isShowOnlyMyPosts]);
+  }, [selectedCity, , selectedType, isShowOnlyMyPosts]);
 
   useEffect(() => {
     console.log(posts);
@@ -49,7 +45,7 @@ const Explore = observer(() => {
     return () => {
       cancel();
     };
-  }, [page, selectedCity, isShowOnlyMyPosts]);
+  }, [page, selectedCity, selectedType, isShowOnlyMyPosts]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,7 +81,7 @@ const Explore = observer(() => {
       };
     } else {
       return () => {
-        return postsService.getByCity(selectedCity, page);
+        return postsService.getByCityAndType(selectedCity, selectedType, page);
       };
     }
   };
@@ -113,6 +109,7 @@ const Explore = observer(() => {
     setPostToEdit({
       picture,
       city: post.city,
+      type: post.type,
       description: post.description,
       postId: post._id,
     });
@@ -123,7 +120,7 @@ const Explore = observer(() => {
   return (
     <>
       <Stack sx={{ p: 4, gap: 2 }}>
-        <Stack spacing={2} sx={{ height: "10vh" }}>
+        <Stack spacing={2} sx={{ mb: 3 }}>
           <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
             <Typography
               variant="h6"
@@ -138,18 +135,31 @@ const Explore = observer(() => {
               sx={{ my: "auto" }}
             />
           </Box>
+
           {!isShowOnlyMyPosts && (
-            <SelectCity
-              city={selectedCity}
-              setCity={setSelectedCity}
-              sx={{ width: "20vw", height: "5vh" }}
-            />
+            <>
+              <SelectCity
+                city={selectedCity}
+                setCity={setSelectedCity}
+                sx={{ width: "20vw", height: "5vh" }}
+              />
+              <SelectTrainingType
+                type={selectedType}
+                setType={setSelectedType}
+                sx={{ width: "20vw", height: "5vh" }}
+              />
+            </>
           )}
         </Stack>
+
         <Grid
           container
           spacing={3}
-          sx={{ maxHeight: "75vh", overflowY: "auto", mt: 1, pr: 2 }}
+          sx={{
+            height: "70vh",
+            overflowY: "auto",
+            pr: 2,
+          }}
           ref={scrolledElementRef}
         >
           {posts.map((post, index) => (
@@ -162,6 +172,7 @@ const Explore = observer(() => {
           ))}
         </Grid>
       </Stack>
+
       {postToEdit && (
         <EditPostDialog
           open={openEditPostDialog}

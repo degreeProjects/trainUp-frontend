@@ -15,10 +15,12 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { config } from "../../config";
 import type { PostFormInput, UploadPostDto } from "../../common/types";
 import ValidatedSelectCity from "./ValidatedSelectCity";
+import SelectTrainingType from "./SelectTrainingType";
 
 const schema = yup.object({
   description: yup.string().required("description is required"),
   city: yup.string().required("city is required"),
+  type: yup.string().required("training type is required"),
 });
 
 interface Props {
@@ -43,6 +45,7 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
     values: {
       description: uploadPostDto.description,
       city: uploadPostDto.city,
+      type: uploadPostDto.type,
     },
     resolver: yupResolver(schema),
   });
@@ -144,6 +147,10 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
           )}
         </Stack>
         <ValidatedSelectCity
+          control={control}
+          sx={{ height: "5vh", width: "30vw" }}
+        />
+        <SelectTrainingType
           control={control}
           sx={{ height: "5vh", width: "30vw" }}
         />

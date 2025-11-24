@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
   Grid,
+  CardMedia,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { useNavigate } from "react-router-dom";
@@ -41,10 +42,16 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   };
 
   return (
-    <Grid item md={3}>
+    <Grid item xs={12} sm={6} md={4}>
       <Card
-        elevation={0}
-        sx={{ backgroundColor: "primary.main", position: "relative" }}
+        elevation={3}
+        sx={{
+          backgroundColor: "primary.main",
+          position: "relative",
+          borderRadius: 2,
+          overflow: "hidden",
+          height: "27vh",
+        }}
       >
         <PostActions
           userId={post.user._id}
@@ -52,74 +59,77 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           onExpandClick={showPostComments}
           onEditClick={() => openEditPostDialog(post)}
         />
-        <CardContent sx={{ mt: 2 }}>
-          <Stack>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Box sx={{ display: "flex" }}>
-                <Tooltip title={post.user.fullName} placement="top">
-                  <Avatar
-                    src={
-                      post.user.profileImage
-                        ? config.uploadFolderUrl + post.user.profileImage
-                        : config.publicFolderUrl + "profile.png"
-                    }
-                    alt={post.user.fullName}
-                    sx={{
-                      width: "3vh",
-                      height: "3vh",
-                      borderRadius: "50%",
-                      ml: 1,
-                    }}
-                  ></Avatar>
-                </Tooltip>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="subtitle1" color="white">
-                  {post.comments.length}
-                </Typography>
-                <ChatOutlinedIcon
-                  sx={{ color: "white", width: "20px", ml: 0.5 }}
-                />
-              </Box>
+
+        {post.image && (
+          <CardMedia
+            component="img"
+            image={config.uploadFolderUrl + post.image}
+            alt="post image"
+            sx={{
+              width: "100%",
+              height: 100,
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        <CardContent sx={{ mt: 1, p: 1 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Tooltip title={post.user.fullName} placement="top">
+              <Avatar
+                src={
+                  post.user.profileImage
+                    ? config.uploadFolderUrl + post.user.profileImage
+                    : config.publicFolderUrl + "profile.png"
+                }
+                alt={post.user.fullName}
+                sx={{ width: 32, height: 32 }}
+              />
+            </Tooltip>
+
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="subtitle2" color="white" sx={{ mr: 0.5 }}>
+                {post.comments.length}
+              </Typography>
+              <ChatOutlinedIcon sx={{ color: "white", fontSize: 18 }} />
             </Box>
           </Stack>
-          <Grid container>
-            <Grid item md={10} height="10vh">
-              <Typography variant="body2" color="white">
-                {post.city}
-              </Typography>
-              <Typography
-                variant="body1"
-                color="white"
-                sx={{
-                  mt: 1,
-                  maxHeight: "8vh",
-                  overflowY: "auto",
-                }}
-              >
-                {post.description}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              md={2}
+
+          <Box sx={{ mt: 0.5 }}>
+            <Typography variant="body2" color="white">
+              City: {post.city}
+            </Typography>
+            <Typography variant="body2" color="white">
+              Type: {post.type}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="white"
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "end",
+                mt: 0.5,
+                maxHeight: 60,
+                overflowY: "auto",
               }}
             >
-              <Typography variant="body2" color="white" sx={{ ml: 1 }}>
-                {new Date(post.createdAt).toLocaleDateString("he-IL")}
-              </Typography>
-            </Grid>
-          </Grid>
+              Description: {post.description}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              mt: 0.5,
+            }}
+          >
+            <Typography variant="caption" color="white">
+              {new Date(post.createdAt).toLocaleDateString("he-IL")}
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
     </Grid>

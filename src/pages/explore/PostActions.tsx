@@ -1,7 +1,7 @@
 import { Box, IconButton } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import OpenWithOutlinedIcon from "@mui/icons-material/OpenWithOutlined";
+import MapsUgcOutlinedIcon from "@mui/icons-material/MapsUgcOutlined";
 import { observer } from "mobx-react-lite";
 import userStore from "../../common/store/user.store";
 
@@ -64,7 +64,7 @@ const PostActions = observer(
             },
           }}
         >
-          <OpenWithOutlinedIcon />
+          <MapsUgcOutlinedIcon />
         </IconButton>
       </Box>
     );
