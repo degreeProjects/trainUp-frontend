@@ -7,8 +7,8 @@ import Layout from "./components/Layout";
 import Explore from "./pages/explore/Explore";
 import Comments from "./pages/comments/Comments";
 import UploadPost from "./pages/UploadPost";
-import Profile from "./pages/profile/Profile";
-import EditProfile from "./pages/profile/EditProfile";
+import EditProfile from "./pages/EditProfile";
+import CalculateCalories from "./pages/CalculateCalories";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -20,10 +20,8 @@ function App() {
         <Route index element={<Explore />} />
         <Route path="comments/:postId" element={<Comments />} />
         <Route path="upload" element={<UploadPost />} />
-        <Route path="profile">
-          <Route index element={<Profile />} />
-          <Route path="edit" element={<EditProfile />} />
-        </Route>
+        <Route path="calories/burn" element={<CalculateCalories />} />
+        <Route path="profile/edit" element={<EditProfile />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

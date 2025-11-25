@@ -27,11 +27,15 @@ const pages: Array<LinkItem> = [
     path: "/upload",
     title: "Upload",
   },
+  {
+    path: "/calories/burn",
+    title: "Calculate Calories",
+  },
 ];
 
 const settings: Array<LinkItem> = [
   {
-    path: "/profile",
+    path: "/profile/edit",
     title: "Profile",
   },
   {
@@ -68,130 +72,123 @@ const Layout = observer(() => {
   };
 
   return (
-  <>
-    <AppBar
-      position="static"
-      sx={{
-        background: "linear-gradient(90deg, #0d47a1 0%, #1976d2 100%)",
-        boxShadow: 3,
-      }}
-    >
-      <Toolbar
+    <>
+      <AppBar
+        position="static"
         sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 3,
+          background: "linear-gradient(90deg, #0d47a1 0%, #1976d2 100%)",
+          boxShadow: 3,
         }}
       >
-        
-        <Box
+        <Toolbar
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1,
+            gap: 3,
           }}
         >
-          <FitnessCenterIcon sx={{ color: "white", fontSize: 30 }} />
-
-          <Typography
-            variant="h5"
+          <Box
             sx={{
-              fontWeight: 600,
-              color: "white",
-              letterSpacing: 0.5,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
             }}
           >
-            TrainUp
-          </Typography>
-        </Box>
+            <FitnessCenterIcon sx={{ color: "white", fontSize: 30 }} />
 
-        
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: "flex",
-            justifyContent: "flex-start",
-            ml: 4,
-            gap: 2,
-          }}
-        >
-          {pages.map((page) => (
-            <NavButton
-              key={page.title}
-              path={page.path}
-              title={page.title}
-            />
-          ))}
-        </Box>
-
-        <Box sx={{ flexGrow: 0 }}>
-          <IconButton
-            onClick={openUserMenu}
-            sx={{
-              p: 0,
-              "&:hover": {
-                transform: "scale(1.05)",
-                transition: "0.15s",
-              },
-            }}
-          >
-            <Avatar
-              src={
-                user?.profileImage
-                  ? config.uploadFolderUrl + user.profileImage
-                  : config.publicFolderUrl + "profile.png"
-              }
+            <Typography
+              variant="h5"
               sx={{
-                width: 40,
-                height: 40,
-                border: "2px solid rgba(255,255,255,0.7)",
+                fontWeight: 600,
+                color: "white",
+                letterSpacing: 0.5,
               }}
-            />
-          </IconButton>
+            >
+              TrainUp
+            </Typography>
+          </Box>
 
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            sx={{ mt: "45px" }}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "flex-start",
+              ml: 4,
+              gap: 2,
             }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            open={Boolean(anchorElUser)}
-            onClose={closeUserMenu}
           >
-            {settings.map((setting) => (
-              <MenuItem
-                key={setting.title}
-                onClick={() => {
-                  setting.callback && setting.callback();
-                  selectMenuOption(setting.path);
-                }}
-                sx={{
-                  px: 3,
-                  py: 1.5,
-                  "&:hover": { bgcolor: "primary.light", color: "white" },
-                }}
-              >
-                <Typography textAlign="center" sx={{ fontWeight: 500 }}>
-                  {setting.title}
-                </Typography>
-              </MenuItem>
+            {pages.map((page) => (
+              <NavButton key={page.title} path={page.path} title={page.title} />
             ))}
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
+          </Box>
 
-    <Outlet />
-  </>
-);
+          <Box sx={{ flexGrow: 0 }}>
+            <IconButton
+              onClick={openUserMenu}
+              sx={{
+                p: 0,
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "0.15s",
+                },
+              }}
+            >
+              <Avatar
+                src={
+                  user?.profileImage
+                    ? config.uploadFolderUrl + user.profileImage
+                    : config.publicFolderUrl + "profile.png"
+                }
+                sx={{
+                  width: 40,
+                  height: 40,
+                  border: "2px solid rgba(255,255,255,0.7)",
+                }}
+              />
+            </IconButton>
 
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              sx={{ mt: "45px" }}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              open={Boolean(anchorElUser)}
+              onClose={closeUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem
+                  key={setting.title}
+                  onClick={() => {
+                    setting.callback && setting.callback();
+                    selectMenuOption(setting.path);
+                  }}
+                  sx={{
+                    px: 3,
+                    py: 1.5,
+                    "&:hover": { bgcolor: "primary.light", color: "white" },
+                  }}
+                >
+                  <Typography textAlign="center" sx={{ fontWeight: 500 }}>
+                    {setting.title}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      <Outlet />
+    </>
+  );
 });
 
 export default Layout;
