@@ -27,6 +27,10 @@ const pages: Array<LinkItem> = [
     path: "/upload",
     title: "Upload",
   },
+  {
+    path: "/calories/burn",
+    title: "Calculate Calories",
+  },
 ];
 
 const settings: Array<LinkItem> = [

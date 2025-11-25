@@ -38,3 +38,11 @@ export interface RegisterFormInput {
   fullName: string;
   homeCity?: string;
 }
+
+export interface CaloriesBurnInput {
+  type: string;
+  trainingLength: number;
+  height: number;
+  weight: number;
+  age: number;
+}
