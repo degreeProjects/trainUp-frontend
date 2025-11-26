@@ -31,6 +31,10 @@ const pages: Array<LinkItem> = [
     path: "/calories/burn",
     title: "Calculate Calories",
   },
+  {
+    path: "/likedPosts",
+    title: "Liked Posts"
+  }
 ];
 
 const settings: Array<LinkItem> = [
