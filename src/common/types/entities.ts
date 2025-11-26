@@ -6,6 +6,7 @@ export interface IPost {
   type: string;
   user: IUser;
   comments: Array<IComment>;
+  likes: Array<string>;
   createdAt: string;
 }
 

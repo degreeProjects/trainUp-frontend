@@ -115,6 +115,33 @@ class PostsService {
     });
     return { request, cancel: () => controller.abort() };
   }
+
+  addLike(postId: string, userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.put(`${this.endpoint}/addLike/${postId}?userId=${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  removeLike(postId: string, userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.put(`${this.endpoint}/removeLike/${postId}?userId=${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getLikedPostsByUser(userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(`${this.endpoint}/likedPosts/${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
 }
 
 const postsService = new PostsService();

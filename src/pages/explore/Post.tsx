@@ -10,6 +10,7 @@ import {
   CardMedia,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import userStore from "../../common/store/user.store";
 import { useNavigate } from "react-router-dom";
 import type { IPost } from "../../common/types";
 import PostActions from "./PostActions";
@@ -25,6 +26,7 @@ interface Props {
 
 function Post({ post, setPosts, openEditPostDialog }: Props) {
   const navigate = useNavigate();
+  const { user } = userStore;
 
   const deletePost = async (postId: string) => {
     const { request: deletePost } = postsService.deletePost(postId);
@@ -32,6 +34,28 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
     try {
       await deletePost;
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const addLike = async (postId: string) => {
+    try {
+      const newPost = (await (postsService.addLike(postId, user?._id!!)).request).data;
+      setPosts((prev) =>
+        prev.map((post) => (post._id === newPost._id ? newPost : post))
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const removeLike = async (postId: string) => {
+    try {
+      const newPost = (await (postsService.removeLike(postId, user?._id!!)).request).data;
+      setPosts((prev) =>
+        prev.map((post) => (post._id === newPost._id ? newPost : post))
+      );
     } catch (err) {
       console.error(err);
     }
@@ -54,10 +78,12 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
         }}
       >
         <PostActions
-          userId={post.user._id}
+          post={post}
           onDeleteClick={() => deletePost(post._id)}
           onExpandClick={showPostComments}
           onEditClick={() => openEditPostDialog(post)}
+          onLikeClick={() => addLike(post._id)}
+          onRemoveLikeClick={() => removeLike(post._id)}
         />
 
         {post.image && (
