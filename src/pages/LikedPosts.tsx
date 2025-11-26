@@ -1,34 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Typography, Stack, Grid } from "@mui/material";
-import AntSwitch from "../../components/AntSwitch";
-import EditPostDialog from "../EditPost";
-import Post from "./Post";
-import postsService from "../../services/postService";
-import type { IPost, PostToEdit } from "../../common/types";
-import SelectCity from "../../components/SelectCity";
-import SelectTrainingType from "../../components/SelectTrainingType";
+import userStore from "../common/store/user.store";
+import { Stack, Grid } from "@mui/material";
+import EditPostDialog from "./EditPost";
+import Post from "./explore/Post";
+import postsService from "../services/postService";
+import type { IPost, PostToEdit } from "../common/types";
 import { observer } from "mobx-react-lite";
-import { fetchImageAndConvertToFile } from "../../common/utils/fetch-image";
+import { fetchImageAndConvertToFile } from "../common/utils/fetch-image";
 
-const Explore = observer(() => {
-  const [isShowOnlyMyPosts, setIsShowOnlyMyPosts] = useState(false);
+const LikedPosts = observer(() => {
+  const { user } = userStore;
   const [posts, setPosts] = useState<IPost[]>([]);
   const [page, setPage] = useState(1);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedType, setSelectedType] = useState("");
   const scrolledElementRef = useRef<HTMLDivElement | null>(null);
   const [openEditPostDialog, setOpenEditPostDialog] = useState(false);
   const [postToEdit, setPostToEdit] = useState<PostToEdit>();
 
   useEffect(() => {
-    setPosts([]);
-    setPage(1);
-    scrolledElementRef.current!.scrollTop = 0;
-  }, [selectedCity, , selectedType, isShowOnlyMyPosts]);
-
-  useEffect(() => {
-    const postsRequest = determinePostsRequest();
-    const { request, cancel } = postsRequest();
+    const postsRequest = postsService.getLikedPostsByUser(user?._id || "");
+    const { request, cancel } = postsRequest;
     request
       .then((res: any) => {
         if (page === 1) {
@@ -44,7 +34,7 @@ const Explore = observer(() => {
     return () => {
       cancel();
     };
-  }, [page, selectedCity, selectedType, isShowOnlyMyPosts]);
+  }, [page]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,25 +63,13 @@ const Explore = observer(() => {
     };
   }, [posts]);
 
-  const determinePostsRequest = () => {
-    if (isShowOnlyMyPosts) {
-      return () => {
-        return postsService.getByUser(page);
-      };
-    } else {
-      return () => {
-        return postsService.getByCityAndType(selectedCity, selectedType, page);
-      };
-    }
-  };
-
   const handleCloseEditDialog = (isEdited = false) => {
     setOpenEditPostDialog(false);
     if (isEdited) {
       setPage(1);
       scrolledElementRef.current!.scrollTop = 0;
-      const postsRequest = determinePostsRequest();
-      const { request } = postsRequest();
+      const postsRequest = postsService.getLikedPostsByUser(user?._id || "");
+      const { request } = postsRequest;
       request
         .then((res: any) => {
           if (res.data.length) setPosts(res.data);
@@ -116,41 +94,13 @@ const Explore = observer(() => {
     setOpenEditPostDialog(true);
   };
 
+  const getFilteredPosts = () => {
+    return posts.filter((post) => post.likes.includes(user?._id || ""));
+  };
+
   return (
     <>
       <Stack sx={{ p: 4, gap: 2 }}>
-        <Stack spacing={2} sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-            <Typography
-              variant="h6"
-              sx={{ color: "secondary.main", fontWeight: "bold" }}
-            >
-              Only My Posts
-            </Typography>
-            <AntSwitch
-              checked={isShowOnlyMyPosts}
-              onChange={(event) => setIsShowOnlyMyPosts(event.target.checked)}
-              inputProps={{ "aria-label": "ant design" }}
-              sx={{ my: "auto" }}
-            />
-          </Box>
-
-          {!isShowOnlyMyPosts && (
-            <>
-              <SelectCity
-                city={selectedCity}
-                setCity={setSelectedCity}
-                sx={{ width: "20vw", height: "5vh" }}
-              />
-              <SelectTrainingType
-                type={selectedType}
-                setType={setSelectedType}
-                sx={{ width: "20vw", height: "5vh" }}
-              />
-            </>
-          )}
-        </Stack>
-
         <Grid
           container
           spacing={3}
@@ -161,7 +111,7 @@ const Explore = observer(() => {
           }}
           ref={scrolledElementRef}
         >
-          {posts.map((post, index) => (
+          {getFilteredPosts().map((post, index) => (
             <Post
               post={post}
               setPosts={setPosts}
@@ -183,4 +133,4 @@ const Explore = observer(() => {
   );
 });
 
-export default Explore;
+export default LikedPosts;
