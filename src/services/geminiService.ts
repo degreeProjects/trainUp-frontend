@@ -12,9 +12,13 @@ export async function calculateCaloriesBurn(
   weight: number,
   age: number
 ) {
+  const contents = `User Profile: ${height}cm, ${weight}kg, ${age} years old. 
+    Activity: ${trainingType} for ${trainingLength} minutes. 
+    Task: Provide ONLY the estimated calorie burn range (e.g. 300-400). No prose.`;
+
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `My height is ${height}cm and my weight is ${weight}kg, I am ${age} years old, and I had ${trainingType} training for ${trainingLength} minutes, tell me how many calories did I burn. I want you to return: just the calories burn range with no other text or explanations`,
+    contents,
   });
 
   return `You burn: ${response.text} in this training`;
