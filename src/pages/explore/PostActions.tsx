@@ -33,7 +33,7 @@ const PostActions = observer(
           pt: 1,
         }}
       >
-        {user?._id === post.user._id && (
+        {user?._id === post?.user?._id && (
           <Box sx={{ mr: "auto" }}>
             <IconButton
               onClick={onDeleteClick}
@@ -60,7 +60,7 @@ const PostActions = observer(
           </Box>
         )}
         <Box sx={{ ml: "auto" }}>
-          {post.likes.includes(user?._id || "") ? (
+          {post?.likes.includes(user?._id || "") ? (
             <IconButton
               onClick={onRemoveLikeClick}
               sx={{

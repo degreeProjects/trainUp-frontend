@@ -33,7 +33,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
 
     try {
       await deletePost;
-      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+      setPosts((prevPosts) => prevPosts.filter((post) => post?._id !== postId));
     } catch (err) {
       console.error(err);
     }
@@ -43,7 +43,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
     try {
       const newPost = (await (postsService.addLike(postId, user?._id!!)).request).data;
       setPosts((prev) =>
-        prev.map((post) => (post._id === newPost._id ? newPost : post))
+        prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );
     } catch (err) {
       console.error(err);
@@ -54,7 +54,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
     try {
       const newPost = (await (postsService.removeLike(postId, user?._id!!)).request).data;
       setPosts((prev) =>
-        prev.map((post) => (post._id === newPost._id ? newPost : post))
+        prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );
     } catch (err) {
       console.error(err);
@@ -62,7 +62,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   };
 
   const showPostComments = () => {
-    navigate(`/comments/${post._id}`);
+    navigate(`/comments/${post?._id}`);
   };
 
   return (
@@ -79,17 +79,17 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
       >
         <PostActions
           post={post}
-          onDeleteClick={() => deletePost(post._id)}
+          onDeleteClick={() => deletePost(post?._id)}
           onExpandClick={showPostComments}
           onEditClick={() => openEditPostDialog(post)}
-          onLikeClick={() => addLike(post._id)}
-          onRemoveLikeClick={() => removeLike(post._id)}
+          onLikeClick={() => addLike(post?._id)}
+          onRemoveLikeClick={() => removeLike(post?._id)}
         />
 
-        {post.image && (
+        {post?.image && (
           <CardMedia
             component="img"
-            image={config.uploadFolderUrl + post.image}
+            image={config.uploadFolderUrl + post?.image}
             alt="post image"
             sx={{
               width: "100%",
@@ -105,21 +105,21 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Tooltip title={post.user.fullName} placement="top">
+            <Tooltip title={post?.user?.fullName ?? ""} placement="top">
               <Avatar
                 src={
-                  post.user.profileImage
-                    ? config.uploadFolderUrl + post.user.profileImage
+                  post?.user?.profileImage
+                    ? config.uploadFolderUrl + post?.user.profileImage
                     : config.publicFolderUrl + "profile.png"
                 }
-                alt={post.user.fullName}
+                alt={post?.user?.fullName ?? ""}
                 sx={{ width: 32, height: 32 }}
               />
             </Tooltip>
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle2" color="white" sx={{ mr: 0.5 }}>
-                {post.comments.length}
+                {post?.comments?.length}
               </Typography>
               <ChatOutlinedIcon sx={{ color: "white", fontSize: 18 }} />
             </Box>
@@ -127,10 +127,10 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
 
           <Box sx={{ mt: 0.5 }}>
             <Typography variant="body2" color="white">
-              City: {post.city}
+              City: {post?.city}
             </Typography>
             <Typography variant="body2" color="white">
-              Type: {post.type}
+              Type: {post?.type}
             </Typography>
             <Typography
               variant="body2"
@@ -141,7 +141,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
                 overflowY: "auto",
               }}
             >
-              Description: {post.description}
+              Description: {post?.description}
             </Typography>
           </Box>
 
@@ -153,7 +153,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             }}
           >
             <Typography variant="caption" color="white">
-              {new Date(post.createdAt).toLocaleDateString("he-IL")}
+              {new Date(post?.createdAt).toLocaleDateString("he-IL")}
             </Typography>
           </Box>
         </CardContent>
