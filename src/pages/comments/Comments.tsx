@@ -19,6 +19,8 @@ function Comments() {
 
     const { request } = postsService.getPost(postId!);
 
+    // Comments lives on its own route, so always hydrate from the server to
+    // avoid showing stale discussions from whatever page navigated here.
     request
       .then((res) => {
         if (!res.data) navigate("/");

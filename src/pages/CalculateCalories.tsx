@@ -26,6 +26,8 @@ const CalculateCalories = observer(() => {
   const { types, fetchTrainingTypes } = trainingTypesStore;
 
   useEffect(() => {
+    // The schema depends on server-provided training types, so ensure the list
+    // is populated before users interact with the form.
     fetchTrainingTypes();
   }, []);
 
@@ -79,6 +81,8 @@ const CalculateCalories = observer(() => {
   };
 
   const clearForm = () => {
+    // Reset both the react-hook-form state and the derived Gemini response so
+    // the UI returns to its initial blank slate.
     reset();
     setGeminiRes(undefined);
   };

@@ -13,6 +13,8 @@ class TrainingTypesStore {
     try {
       if (this.isDataLoaded) return;
 
+      // Training types change rarely, so memoize after the first request to
+      // avoid hammering the API every time a component mounts.
       const res = await postsService.getTrainingTypes();
       this.types = (await res.request).data;
       this.isDataLoaded = true;

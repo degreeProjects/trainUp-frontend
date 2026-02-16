@@ -38,6 +38,8 @@ const RegisterForm = observer(() => {
   const { cities, fetchCities } = citiesStore;
 
   useEffect(() => {
+    // Cities list comes from an external dataset; pull it once and share through
+    // the MobX store so every autocomplete stays in sync.
     fetchCities();
   }, [fetchCities]);
 

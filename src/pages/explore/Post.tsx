@@ -33,6 +33,8 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
 
     try {
       await deletePost;
+      // Trim the deleted card locally so the grid updates immediately without
+      // refetching the whole page.
       setPosts((prevPosts) => prevPosts.filter((post) => post?._id !== postId));
     } catch (err) {
       console.error(err);
@@ -42,6 +44,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const addLike = async (postId: string) => {
     try {
       const newPost = (await (postsService.addLike(postId, user?._id!!)).request).data;
+      // Replace only the affected post to keep pagination state intact.
       setPosts((prev) =>
         prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );
@@ -53,6 +56,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const removeLike = async (postId: string) => {
     try {
       const newPost = (await (postsService.removeLike(postId, user?._id!!)).request).data;
+      // Replace only the affected post to keep pagination state intact.
       setPosts((prev) =>
         prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );

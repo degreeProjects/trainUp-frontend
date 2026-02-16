@@ -52,6 +52,8 @@ const EditProfile = observer(() => {
 
   useEffect(() => {
     if (user?.profileImage) {
+      // The avatar widget expects a File, so fetch the stored filename and turn
+      // it back into a File to enable recropping or immediate re-upload.
       fetchImageAndConvertToFile(user?.profileImage).then((file) => {
         setProfileImage(file);
       });
