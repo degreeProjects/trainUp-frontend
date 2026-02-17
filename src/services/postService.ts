@@ -11,6 +11,9 @@ class PostsService {
   }
 
   uploadPost(uploadDto: UploadPostDto) {
+    // Each call returns its own AbortController so pages can cancel in-flight
+    // requests (e.g. when unmounting or switching filters) without affecting
+    // other consumers.
     const controller = new AbortController();
 
     const request = apiClientWithAuth.post(

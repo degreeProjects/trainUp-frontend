@@ -21,12 +21,16 @@ const Explore = observer(() => {
   const [postToEdit, setPostToEdit] = useState<PostToEdit>();
 
   useEffect(() => {
+    // Whenever the filters switch, reset pagination and jump back to the top so
+    // the new dataset starts from page 1.
     setPosts([]);
     setPage(1);
     scrolledElementRef.current!.scrollTop = 0;
   }, [selectedCity, , selectedType, isShowOnlyMyPosts]);
 
   useEffect(() => {
+    // `determinePostsRequest` returns a factory so we can reuse the same fetch
+    // logic for either the feed or \"my posts\" without duplicating pagination.
     const postsRequest = determinePostsRequest();
     const { request, cancel } = postsRequest();
     request
@@ -55,6 +59,8 @@ const Explore = observer(() => {
         const treshold = (scrollHeight - scrollTop) * 0.1;
 
         if (heightRemainToScroll <= treshold) {
+          // Debounce by removing the listener until the next render; otherwise
+          // fast scrolling could increment `page` multiple times.
           gridElement.removeEventListener("scroll", handleScroll);
           setPage((prevPage) => prevPage + 1);
         }
@@ -74,6 +80,8 @@ const Explore = observer(() => {
   }, [posts]);
 
   const determinePostsRequest = () => {
+    // Delay invoking the service call so callers can decide whether they need a
+    // user feed or the global feed without repeating the HTTP wiring.
     if (isShowOnlyMyPosts) {
       return () => {
         return postsService.getByUser(page);
@@ -90,6 +98,8 @@ const Explore = observer(() => {
     if (isEdited) {
       setPage(1);
       scrolledElementRef.current!.scrollTop = 0;
+      // After editing, reload page 1 so the card immediately reflects the
+      // server-side changes before users scroll again.
       const postsRequest = determinePostsRequest();
       const { request } = postsRequest();
       request
@@ -103,6 +113,8 @@ const Explore = observer(() => {
   };
 
   const onOpenEditPostDialog = async (post: IPost) => {
+    // Convert the stored filename back into a File object so the edit form can
+    // reuse the upload component without special casing server images.
     const picture = await fetchImageAndConvertToFile(post.image);
 
     setPostToEdit({

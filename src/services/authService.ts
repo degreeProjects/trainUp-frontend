@@ -11,6 +11,8 @@ class AuthService {
   }
 
   register(registerDto: RegisterDto) {
+    // Auth flows also expose AbortControllers so forms can safely unmount or
+    // users can navigate away without leaving pending HTTP requests hanging.
     const controller = new AbortController();
 
     const request = apiClient.post(

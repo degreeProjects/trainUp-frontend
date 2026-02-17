@@ -37,6 +37,8 @@ function ProfileAvatarInput({
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const onSaveCroppedImage = (blob: Blob) => {
+    // Normalize avatar edits into the same filename/type so `createFormData`
+    // can treat cropped images just like freshly uploaded ones.
     changeProfileImage(new File([blob], "profile.png", { type: "image/png" }));
     setPreview(new File([blob], "profile.png", { type: "image/png" }));
     setProfileModalOpen(false);
@@ -84,6 +86,7 @@ function ProfileAvatarInput({
             setProfileModalOpen={setProfileModalOpen}
           />
         )}
+        {/* Hide the actual file input so we can style the dropzone freely. */}
         <input
           type="file"
           accept="image/*"

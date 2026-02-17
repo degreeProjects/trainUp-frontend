@@ -8,8 +8,12 @@ import {
   Typography,
   Grid,
   CardMedia,
+  Dialog,
+  DialogContent,
+  IconButton,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import userStore from "../../common/store/user.store";
 import { useNavigate } from "react-router-dom";
 import type { IPost } from "../../common/types";
@@ -17,6 +21,7 @@ import PostActions from "./PostActions";
 import { config } from "../../config";
 import postsService from "../../services/postService";
 import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 
 interface Props {
   post: IPost;
@@ -27,12 +32,23 @@ interface Props {
 function Post({ post, setPosts, openEditPostDialog }: Props) {
   const navigate = useNavigate();
   const { user } = userStore;
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+
+  const handleImageClick = () => {
+    setImageDialogOpen(true);
+  };
+
+  const handleCloseImageDialog = () => {
+    setImageDialogOpen(false);
+  };
 
   const deletePost = async (postId: string) => {
     const { request: deletePost } = postsService.deletePost(postId);
 
     try {
       await deletePost;
+      // Trim the deleted card locally so the grid updates immediately without
+      // refetching the whole page.
       setPosts((prevPosts) => prevPosts.filter((post) => post?._id !== postId));
     } catch (err) {
       console.error(err);
@@ -42,6 +58,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const addLike = async (postId: string) => {
     try {
       const newPost = (await (postsService.addLike(postId, user?._id!!)).request).data;
+      // Replace only the affected post to keep pagination state intact.
       setPosts((prev) =>
         prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );
@@ -53,6 +70,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const removeLike = async (postId: string) => {
     try {
       const newPost = (await (postsService.removeLike(postId, user?._id!!)).request).data;
+      // Replace only the affected post to keep pagination state intact.
       setPosts((prev) =>
         prev.map((post) => (post?._id === newPost._id ? newPost : post))
       );
@@ -66,7 +84,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   };
 
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={6} md={3}>
       <Card
         elevation={3}
         sx={{
@@ -74,7 +92,8 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           position: "relative",
           borderRadius: 2,
           overflow: "hidden",
-          height: "27vh",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <PostActions
@@ -87,16 +106,50 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
         />
 
         {post?.image && (
-          <CardMedia
-            component="img"
-            image={config.uploadFolderUrl + post?.image}
-            alt="post image"
+          <Box
+            onClick={handleImageClick}
             sx={{
               width: "100%",
-              height: 100,
-              objectFit: "cover",
+              aspectRatio: "5 / 3",
+              position: "relative",
+              cursor: "pointer",
+              overflow: "hidden",
+              transition: "opacity 0.2s",
+              "&:hover": {
+                opacity: 0.85,
+              },
             }}
-          />
+          >
+            {/* Blurred background layer – fills empty space */}
+            <Box
+              component="img"
+              src={config.uploadFolderUrl + post?.image}
+              alt=""
+              aria-hidden
+              sx={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                filter: "blur(20px)",
+                transform: "scale(1.1)",
+              }}
+            />
+
+            {/* Sharp foreground image – fully visible */}
+            <CardMedia
+              component="img"
+              image={config.uploadFolderUrl + post?.image}
+              alt="post image"
+              sx={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </Box>
         )}
 
         <CardContent sx={{ mt: 1, p: 1 }}>
@@ -158,6 +211,61 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
           </Box>
         </CardContent>
       </Card>
+
+      <Dialog
+        open={imageDialogOpen}
+        onClose={handleCloseImageDialog}
+        maxWidth={false}
+        PaperProps={{
+          sx: {
+            width: "65vw",
+            maxWidth: "65vw",
+            maxHeight: "85vh",
+            backgroundColor: "black",
+            overflow: "hidden",
+          },
+        }}
+      >
+        <IconButton
+          onClick={handleCloseImageDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            "&:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+            },
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          sx={{
+            p: 2,
+            backgroundColor: "black",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <img
+            src={config.uploadFolderUrl + post?.image}
+            alt="post image full size"
+            style={{
+              maxWidth: "100%",
+              maxHeight: "80vh",
+              width: "auto",
+              height: "auto",
+              objectFit: "contain",
+              display: "block",
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }

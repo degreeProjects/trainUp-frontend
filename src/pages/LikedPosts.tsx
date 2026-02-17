@@ -24,6 +24,8 @@ const LikedPosts = observer(() => {
         if (page === 1) {
           setPosts(res.data);
         } else {
+          // Append to the existing array to simulate infinite scroll within the
+          // liked-posts subset.
           setPosts((prevPosts) => [...prevPosts, ...res.data]);
         }
       })
@@ -45,6 +47,8 @@ const LikedPosts = observer(() => {
         const treshold = (scrollHeight - scrollTop) * 0.1;
 
         if (heightRemainToScroll <= treshold) {
+          // Remove the listener until the next render so we don't overshoot the
+          // page counter when users fling-scroll.
           gridElement.removeEventListener("scroll", handleScroll);
           setPage((prevPage) => prevPage + 1);
         }
@@ -95,6 +99,8 @@ const LikedPosts = observer(() => {
   };
 
   const getFilteredPosts = () => {
+    // In case another device unliked a post, double-check membership client
+    // side so we don't render cards the server no longer considers \"liked\".
     return posts.filter((post) => post.likes.includes(user?._id || ""));
   };
 

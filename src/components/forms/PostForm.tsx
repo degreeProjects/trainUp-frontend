@@ -69,6 +69,8 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
   };
 
   const setPostImageErrorOnSubmit = () => {
+    // react-hook-form handles text fields, but the image input is unmanaged, so
+    // enforce the \"required\" constraint manually once the user tries to submit.
     if (!postImage) {
       setPostImageError("post image is required");
     }
@@ -77,6 +79,8 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
   const onSuccessSubmit: SubmitHandler<PostFormInput> = async (data) => {
     setPostImageErrorOnSubmit();
     if (postImage) {
+      // Merge the validated fields with the File before handing control to the
+      // parent so upload/edit flows can reuse the same form component.
       onSubmitFunc({
         picture: postImage!,
         ...data,

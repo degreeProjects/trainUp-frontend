@@ -12,6 +12,8 @@ export async function calculateCaloriesBurn(
   weight: number,
   age: number
 ) {
+  // Keep the prompt terse and deterministic so the UI can display just the
+  // numeric calorie range without additional parsing.
   const contents = `User Profile: ${height}cm, ${weight}kg, ${age} years old. 
     Activity: ${trainingType} for ${trainingLength} minutes. 
     Task: Provide ONLY the estimated calorie burn range (e.g. 300-400). No prose.`;

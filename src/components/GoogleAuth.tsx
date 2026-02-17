@@ -13,6 +13,8 @@ function GoogleAuth() {
       );
       const res = (await loginByGoogleRequest).data;
 
+      // Mirror the email/password login flow by persisting both tokens so the
+      // interceptor logic continues to work with Google logins.
       document.cookie = `access_token=${res.accessToken}; path=/`;
       document.cookie = `refresh_token=${res.refreshToken}; path=/`;
 

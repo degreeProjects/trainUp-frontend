@@ -9,6 +9,8 @@ class UsersService {
   }
 
   getMe() {
+    // Keep the controller per-call so profile screens can cancel fetches when
+    // users leave mid-request.
     const controller = new AbortController();
     const request = apiClientWithAuth.get(`${this.endpoint}/me`, {
       signal: controller.signal,

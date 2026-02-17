@@ -24,6 +24,8 @@ function ProfileAvatarUploadModal({
 
   const handleImageSave = async () => {
     if (cropRef) {
+      // AvatarEditor only returns a canvas, so convert it back to a blob/File
+      // before passing it upstream to keep the upload pipeline consistent.
       const dataUrl = (cropRef.current! as any).getImage().toDataURL();
       const result = await fetch(dataUrl);
       const blob = await result.blob();
