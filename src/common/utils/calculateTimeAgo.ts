@@ -1,3 +1,8 @@
+/**
+ * Calculates a human-readable relative time string from a given date to now.
+ * Returns strings such as "just now", "5 minutes ago", "3 days ago", etc.
+ * Supports resolutions of seconds, minutes, hours, days, months, and years.
+ */
 export const calculateTimeAgo = (date: Date): string => {
   const currentDate = new Date();
   const timeDifference = currentDate.getTime() - date.getTime();

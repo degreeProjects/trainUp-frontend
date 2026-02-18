@@ -21,6 +21,11 @@ import ProfileAvatarInput from "../../components/ProfileAvatarInput";
 import { observer } from "mobx-react-lite";
 import citiesStore from "../../common/store/cities.store";
 
+/**
+ * Controlled registration form.
+ * Handles email, password, full name, home city, and profile image.
+ * Validates input with Yup + react-hook-form, submits via authService.register,
+ */
 const schema = yup.object({
   email: yup
     .string()

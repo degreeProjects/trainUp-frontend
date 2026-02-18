@@ -1,6 +1,11 @@
 import axios from "axios";
 import { config } from "../../config";
 
+/**
+ * Fetches a remote image by its relative URL and converts it into a File object.
+ * Useful for pre-populating file input fields with an existing image (e.g. during profile editing).
+ * Throws an error if the image cannot be fetched.
+ */
 export const fetchImageAndConvertToFile = async (
   imageUrl: string
 ): Promise<File> => {

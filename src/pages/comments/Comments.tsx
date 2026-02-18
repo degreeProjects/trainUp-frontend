@@ -6,6 +6,9 @@ import { type IComment } from "../../common/types";
 import Comment from "./Comment";
 import postsService from "../../services/postService";
 
+/**
+ * Page that displays all comments for a specific post
+ */
 function Comments() {
   const navigate = useNavigate();
   const { postId } = useParams();

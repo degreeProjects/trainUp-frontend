@@ -72,10 +72,13 @@ function Login() {
   return (
     <Stack
       sx={{
-        minHeight: "100vh",
+        height: "100%",
+        overflowY: "auto",
         justifyContent: "center",
         alignItems: "center",
         background: "linear-gradient(to bottom right, #0d47a1, #1976d2)",
+        p: 3,
+        boxSizing: "border-box",
       }}
     >
       <Paper

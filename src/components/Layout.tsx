@@ -18,6 +18,10 @@ import authService from "../services/authService";
 import userStore from "../common/store/user.store";
 import { config } from "../config";
 
+/**
+ * Root layout component that wraps all authenticated pages.
+ * Renders the top AppBar with navigation links, a user avatar menu (Profile / Logout),
+ */
 const pages: Array<LinkItem> = [
   {
     path: "/",
@@ -76,7 +80,7 @@ const Layout = observer(() => {
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <AppBar
         position="static"
         sx={{
@@ -190,8 +194,10 @@ const Layout = observer(() => {
         </Toolbar>
       </AppBar>
 
-      <Outlet />
-    </>
+      <Box sx={{ flex: 1, overflowY: "auto" }}>
+        <Outlet />
+      </Box>
+    </Box>
   );
 });
 

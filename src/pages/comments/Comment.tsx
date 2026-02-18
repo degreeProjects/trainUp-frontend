@@ -4,6 +4,11 @@ import { calculateTimeAgo } from "../../common/utils/calculateTimeAgo";
 import { useEffect, useState } from "react";
 import { config } from "../../config";
 
+/**
+ * Presentational component that renders a single comment.
+ * Displays the commenter's avatar, full name, relative timestamp (e.g. "5 minutes ago"),
+ * and the comment body. The relative time is calculated once on mount and whenever the comment changes.
+ */
 interface Props {
   comment: IComment;
 }

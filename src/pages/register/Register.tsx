@@ -2,6 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Stack, Typography, Button, Box, Paper } from "@mui/material";
 import RegisterForm from "./RegisterForm";
 
+/**
+ * Registration page shell.
+ * Renders the full-page gradient background, a welcome heading, the RegisterForm,
+ * and a "Already have an account? Sign in" link that navigates to /login.
+ */
 function Register() {
   const navigate = useNavigate();
 

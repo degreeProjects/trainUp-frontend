@@ -18,7 +18,7 @@ function UploadPost() {
   };
 
   return (
-    <Stack sx={{ alignItems: "center", mt: 5, gap: 2, height: "100vh", pb: 4 }}>
+    <Stack sx={{ alignItems: "center", mt: 5, gap: 2, pb: 4 }}>
       <Typography
         variant="h2"
         sx={{ fontWeight: "bold", color: "secondary.main" }}
