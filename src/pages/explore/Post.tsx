@@ -11,8 +11,8 @@ import {
   Dialog,
   DialogContent,
   IconButton,
-  Button,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -237,7 +237,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             </Box>
           )}
 
-          {(caloriesSummary || hasAiTips || isRefreshingAi || !caloriesSummary) && (
+          {(caloriesSummary || hasAiTips || !caloriesSummary) && (
             <Box
               sx={{
                 mt: 1,
@@ -249,11 +249,22 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
               }}
             >
               {!caloriesSummary && !hasAiTips ? (
-                <Stack spacing={1} alignItems="center">
+                <Stack spacing={1.5} alignItems="center">
                   <CircularProgress size={20} sx={{ color: "white" }} />
                   <Typography variant="body2" color="white">
-                    AI coach is still generating insights...
+                    {isRefreshingAi
+                      ? "Checking for new AI insights..."
+                      : "AI coach is still generating insights..."}
                   </Typography>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={refreshAiInsights}
+                    disabled={isRefreshingAi}
+                    sx={{ borderColor: "white", color: "white" }}
+                  >
+                    {isRefreshingAi ? "Refreshing..." : "Refresh AI Insight"}
+                  </Button>
                 </Stack>
               ) : null}
               {caloriesSummary && (
@@ -282,15 +293,6 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
                   </Typography>
                 </Box>
               )}
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={refreshAiInsights}
-                disabled={isRefreshingAi}
-                sx={{ mt: 1, borderColor: "white", color: "white" }}
-              >
-                {isRefreshingAi ? "Refreshing..." : "Refresh AI Insight"}
-              </Button>
             </Box>
           )}
 
