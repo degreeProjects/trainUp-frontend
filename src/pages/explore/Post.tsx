@@ -11,6 +11,8 @@ import {
   Dialog,
   DialogContent,
   IconButton,
+  Button,
+  CircularProgress,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -33,6 +35,10 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const navigate = useNavigate();
   const { user } = userStore;
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [isRefreshingAi, setIsRefreshingAi] = useState(false);
+  const notes = (post?.notes ?? post?.description ?? "").trim();
+  const hasAiTips = !!post?.aiTips && post.aiTips.trim().length > 0;
+  const caloriesSummary = post?.caloriesSummary?.trim();
 
   const handleImageClick = () => {
     setImageDialogOpen(true);
@@ -81,6 +87,23 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
 
   const showPostComments = () => {
     navigate(`/comments/${post?._id}`);
+  };
+
+  const refreshAiInsights = async () => {
+    setIsRefreshingAi(true);
+    const { request, cancel } = postsService.getPost(post._id);
+    try {
+      const response = await request;
+      const refreshed = response.data;
+      setPosts((prev) =>
+        prev.map((p) => (p?._id === refreshed._id ? refreshed : p))
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      cancel();
+      setIsRefreshingAi(false);
+    }
   };
 
   return (
@@ -188,18 +211,88 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             <Typography variant="body2" color="white">
               Training Length: {post?.trainingLength} min
             </Typography>
-            <Typography
-              variant="body2"
-              color="white"
+          </Box>
+
+          {notes && (
+            <Box
               sx={{
-                mt: 0.5,
-                maxHeight: 60,
+                mt: 1,
+                p: 1.25,
+                borderRadius: 2,
+                backgroundColor: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                maxHeight: 100,
                 overflowY: "auto",
               }}
             >
-              Description: {post?.description}
-            </Typography>
-          </Box>
+              <Typography
+                variant="caption"
+                sx={{ color: "rgba(255,255,255,0.7)" }}
+              >
+                Notes - For AI Personal Trainer
+              </Typography>
+              <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                {notes}
+              </Typography>
+            </Box>
+          )}
+
+          {(caloriesSummary || hasAiTips || isRefreshingAi || !caloriesSummary) && (
+            <Box
+              sx={{
+                mt: 1,
+                p: 1.25,
+                borderRadius: 2,
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05))",
+                border: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              {!caloriesSummary && !hasAiTips ? (
+                <Stack spacing={1} alignItems="center">
+                  <CircularProgress size={20} sx={{ color: "white" }} />
+                  <Typography variant="body2" color="white">
+                    AI coach is still generating insights...
+                  </Typography>
+                </Stack>
+              ) : null}
+              {caloriesSummary && (
+                <Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "rgba(255,255,255,0.7)" }}
+                  >
+                    AI Calories Estimate
+                  </Typography>
+                  <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                    {caloriesSummary}
+                  </Typography>
+                </Box>
+              )}
+              {hasAiTips && (
+                <Box sx={{ mt: caloriesSummary ? 1 : 0 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "rgba(255,255,255,0.7)" }}
+                  >
+                    AI Trainer Tips
+                  </Typography>
+                  <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                    {post?.aiTips}
+                  </Typography>
+                </Box>
+              )}
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={refreshAiInsights}
+                disabled={isRefreshingAi}
+                sx={{ mt: 1, borderColor: "white", color: "white" }}
+              >
+                {isRefreshingAi ? "Refreshing..." : "Refresh AI Insight"}
+              </Button>
+            </Box>
+          )}
 
           <Box
             sx={{

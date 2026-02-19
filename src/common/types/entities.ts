@@ -1,7 +1,10 @@
 export interface IPost {
   _id: string;
-  description: string;
-  image: string;
+  description?: string;
+  notes?: string;
+  aiTips?: string;
+  caloriesSummary?: string;
+  image?: string;
   city: string;
   type: string;
   trainingLength: number;

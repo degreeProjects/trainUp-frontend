@@ -7,7 +7,7 @@ export const createFormData = (data: Record<string, any>) => {
   Object.entries(data).forEach(([key, value]) => {
     if (key === "picture" && value instanceof File) {
       formData.append("picture", value);
-    } else {
+    } else if (value !== undefined && value !== null) {
       formData.set(key, value);
     }
   });

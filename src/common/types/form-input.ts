@@ -3,7 +3,7 @@ export interface LoginDto {
   password: string;
 }
 export interface UploadPostDto {
-  description: string;
+  notes?: string;
   picture?: File;
   city: string;
   type: string;
@@ -26,7 +26,7 @@ export interface RegisterDto {
 }
 
 export interface PostFormInput {
-  description: string;
+  notes?: string;
   city: string;
   type: string;
   trainingLength: number;

@@ -4,7 +4,7 @@ import postsService from "../services/postService";
 import type { UploadPostDto } from "../common/types";
 import { useNavigate } from "react-router-dom";
 
-function UploadPost() {
+const UploadPost = () => {
   const navigate = useNavigate();
   const uploadPost = async (data: UploadPostDto) => {
     const { request: uploadPost } = postsService.uploadPost(data);
@@ -28,7 +28,7 @@ function UploadPost() {
       <PostForm
         sx={{ width: "30%" }}
         uploadPostDto={{
-          description: "",
+          notes: "",
           city: "",
           type: "",
           trainingLength: 0,
@@ -39,6 +39,6 @@ function UploadPost() {
       />
     </Stack>
   );
-}
+};
 
 export default UploadPost;
