@@ -1,0 +1,152 @@
+import { apiClientWithAuth } from "./apiClient";
+import type { IPost, IComment, UploadPostDto } from "../common/types";
+import { config } from "../config";
+import { createFormData } from "../common/utils/createFormData";
+
+class PostsService {
+  private readonly endpoint;
+
+  constructor() {
+    this.endpoint = "/posts";
+  }
+
+  uploadPost(uploadDto: UploadPostDto) {
+    // Each call returns its own AbortController so pages can cancel in-flight
+    // requests (e.g. when unmounting or switching filters) without affecting
+    // other consumers.
+    const controller = new AbortController();
+
+    const request = apiClientWithAuth.post(
+      this.endpoint,
+      createFormData(uploadDto),
+      {
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getPost(postId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get<IPost>(`${this.endpoint}/${postId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getByCityAndType(
+    selectedCity: string,
+    selectedType: string,
+    page: number = 1,
+    pageSize: number = config.defaultPageSize
+  ) {
+    const controller = new AbortController();
+    const city = selectedCity ? selectedCity : "all";
+    const type = selectedType ? selectedType : "all";
+    const request = apiClientWithAuth.get(
+      `${this.endpoint}/search/cityAndType/?city=${city}&type=${type}&page=${page}&pageSize=${pageSize}`,
+      {
+        signal: controller.signal,
+      }
+    );
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  addCommentToPost(
+    addCommentDto: { body: string; date: Date },
+    postId: string
+  ) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.post<IComment>(
+      `${this.endpoint}/${postId}/comment`,
+      addCommentDto,
+      {
+        signal: controller.signal,
+      }
+    );
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getByUser(page: number = 1, pageSize: number = config.defaultPageSize) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(
+      `${this.endpoint}/user/me?page=${page}&pageSize=${pageSize}`,
+      {
+        signal: controller.signal,
+      }
+    );
+    return { request, cancel: () => controller.abort() };
+  }
+
+  editPost(postId: string, editDto: UploadPostDto) {
+    const controller = new AbortController();
+
+    const request = apiClientWithAuth.put(
+      `${this.endpoint}/${postId}`,
+      createFormData(editDto),
+      {
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  deletePost(postId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.delete(`${this.endpoint}/${postId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getTrainingTypes() {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(`${this.endpoint}/training/types`, {
+      signal: controller.signal,
+    });
+    return { request, cancel: () => controller.abort() };
+  }
+
+  addLike(postId: string, userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.put(`${this.endpoint}/addLike/${postId}?userId=${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  removeLike(postId: string, userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.put(`${this.endpoint}/removeLike/${postId}?userId=${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+
+  getLikedPostsByUser(userId: string) {
+    const controller = new AbortController();
+    const request = apiClientWithAuth.get(`${this.endpoint}/likedPosts/${userId}`, {
+      signal: controller.signal,
+    });
+
+    return { request, cancel: () => controller.abort() };
+  }
+}
+
+const postsService = new PostsService();
+
+export default postsService;
