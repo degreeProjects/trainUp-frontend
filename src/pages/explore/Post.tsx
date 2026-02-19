@@ -23,7 +23,7 @@ import PostActions from "./PostActions";
 import { config } from "../../config";
 import postsService from "../../services/postService";
 import type { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   post: IPost;
@@ -39,6 +39,7 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const notes = (post?.notes ?? post?.description ?? "").trim();
   const hasAiTips = !!post?.aiTips && post.aiTips.trim().length > 0;
   const caloriesSummary = post?.caloriesSummary?.trim();
+  const isAwaitingAi = !caloriesSummary && !hasAiTips;
 
   const handleImageClick = () => {
     setImageDialogOpen(true);
@@ -88,6 +89,40 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const showPostComments = () => {
     navigate(`/comments/${post?._id}`);
   };
+
+  useEffect(() => {
+    if (!isAwaitingAi) return;
+
+    let isMounted = true;
+    let cancelRequest: (() => void) | null = null;
+
+    const poll = async () => {
+      cancelRequest?.();
+      const { request, cancel } = postsService.getPost(post._id);
+      cancelRequest = cancel;
+      try {
+        const response = await request;
+        if (!isMounted) return;
+        const refreshed = response.data;
+        if (refreshed.caloriesSummary || refreshed.aiTips) {
+          setPosts((prev) =>
+            prev.map((p) => (p?._id === refreshed._id ? refreshed : p))
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    poll();
+    const interval = setInterval(poll, 7000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      cancelRequest?.();
+    };
+  }, [post._id, isAwaitingAi, setPosts]);
 
   const refreshAiInsights = async () => {
     setIsRefreshingAi(true);
