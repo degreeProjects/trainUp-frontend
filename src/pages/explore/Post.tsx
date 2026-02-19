@@ -12,7 +12,6 @@ import {
   DialogContent,
   IconButton,
   CircularProgress,
-  Button,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -35,7 +34,6 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const navigate = useNavigate();
   const { user } = userStore;
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
-  const [isRefreshingAi, setIsRefreshingAi] = useState(false);
   const notes = (post?.notes ?? post?.description ?? "").trim();
   const hasAiTips = !!post?.aiTips && post.aiTips.trim().length > 0;
   const caloriesSummary = post?.caloriesSummary?.trim();
@@ -123,23 +121,6 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
       cancelRequest?.();
     };
   }, [post._id, isAwaitingAi, setPosts]);
-
-  const refreshAiInsights = async () => {
-    setIsRefreshingAi(true);
-    const { request, cancel } = postsService.getPost(post._id);
-    try {
-      const response = await request;
-      const refreshed = response.data;
-      setPosts((prev) =>
-        prev.map((p) => (p?._id === refreshed._id ? refreshed : p))
-      );
-    } catch (err) {
-      console.error(err);
-    } finally {
-      cancel();
-      setIsRefreshingAi(false);
-    }
-  };
 
   return (
     <Grid item xs={12} sm={6} md={3}>
@@ -287,19 +268,8 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
                 <Stack spacing={1.5} alignItems="center">
                   <CircularProgress size={20} sx={{ color: "white" }} />
                   <Typography variant="body2" color="white">
-                    {isRefreshingAi
-                      ? "Checking for new AI insights..."
-                      : "AI coach is still generating insights..."}
+                    AI coach is still generating insights...
                   </Typography>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={refreshAiInsights}
-                    disabled={isRefreshingAi}
-                    sx={{ borderColor: "white", color: "white" }}
-                  >
-                    {isRefreshingAi ? "Refreshing..." : "Refresh AI Insight"}
-                  </Button>
                 </Stack>
               ) : null}
               {caloriesSummary && (
