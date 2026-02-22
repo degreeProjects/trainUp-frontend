@@ -12,11 +12,11 @@ export async function calculateCaloriesBurn(
   weight: number,
   age: number
 ) {
-  // Keep the prompt terse and deterministic so the UI can display just the
-  // numeric calorie range without additional parsing.
-  const contents = `User Profile: ${height}cm, ${weight}kg, ${age} years old. 
-    Activity: ${trainingType} for ${trainingLength} minutes. 
-    Task: Provide ONLY the estimated calorie burn range (e.g. 300-400). No prose.`;
+  // Keep the prompt short and consistent so the response is easy to display:
+  // a simple calorie range only (no extra text to parse).
+  const contents = `User Profile: ${height}cm, ${weight}kg, ${age} years old.
+Activity: ${trainingType} for ${trainingLength} minutes.
+Task: Return ONLY the estimated calorie burn range (example: 300-400). No extra words.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
