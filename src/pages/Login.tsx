@@ -47,22 +47,29 @@ function Login() {
   });
 
   const register = () => {
+    // Navigate to the registration page.
     navigate("/register");
   };
 
   const login: SubmitHandler<LoginFormInput> = async (data) => {
+    // Send login request, store tokens, then fetch the current user and redirect.
     const { request: loginRequest } = authService.login(data);
 
     try {
       const res = await loginRequest;
+
+      // Save tokens for authenticated requests.
       document.cookie = `access_token=${res.data.accessToken}; path=/`;
       document.cookie = `refresh_token=${res.data.refreshToken}; path=/`;
 
+      // Load the logged-in user (so the app has "me" ready).
       const { request: getMeRequest } = usersService.getMe();
-
       await getMeRequest;
+
+      // Go to home after successful login.
       navigate("/");
     } catch (err: any) {
+      // Show a simple message when credentials are invalid.
       if (err.response.status === 401) {
         setServerError("some of the details are incorrect");
       }
