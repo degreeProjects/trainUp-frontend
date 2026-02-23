@@ -13,14 +13,14 @@ class CitiesStore {
   }
 
   async fetchCities() {
-    // Load cities once, dedupe results, and store a clean list for the UI.
+    // Fetch cities once, then store a cleaned + deduped list for the UI.
     try {
       if (this.isDataLoaded) return;
 
       const res = await axios.get(config.citiesApiUrl);
 
       runInAction(() => {
-        // Extract city names, trim whitespace, drop empty values, then remove duplicates.
+        // Pull the name field, trim spaces, drop empty items, and remove duplicates.
         this.cities = [
           ...new Set(
             res.data?.result?.records
