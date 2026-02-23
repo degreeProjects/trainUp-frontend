@@ -13,19 +13,22 @@ class CitiesStore {
   }
 
   async fetchCities() {
+    // Load cities once, dedupe results, and store a clean list for the UI.
     try {
       if (this.isDataLoaded) return;
 
       const res = await axios.get(config.citiesApiUrl);
+
       runInAction(() => {
-        // Use set constructor and destruct afterwards in order to remove duplicates
+        // Extract city names, trim whitespace, drop empty values, then remove duplicates.
         this.cities = [
           ...new Set(
             res.data?.result?.records
-              .map((city: any) => city[LOCATION_NAME_FIELD].trim())
+              .map((city: any) => city[LOCATION_NAME_FIELD]?.trim())
               .filter(Boolean)
           ),
         ] as string[];
+
         this.isDataLoaded = true;
       });
     } catch (err) {
