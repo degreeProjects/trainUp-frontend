@@ -122,6 +122,7 @@ const Explore = observer(() => {
       city: post.city,
       type: post.type,
       description: post.description,
+      trainingLength: post.trainingLength,
       postId: post._id,
     });
 

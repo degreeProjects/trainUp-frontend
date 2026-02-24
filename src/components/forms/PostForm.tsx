@@ -8,6 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
+import { InputAdornment } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { type ChangeEvent, useState, useRef } from "react";
@@ -21,6 +23,7 @@ const schema = yup.object({
   description: yup.string().required("description is required"),
   city: yup.string().required("city is required"),
   type: yup.string().required("training type is required"),
+  trainingLength: yup.number().required("training length is required").min(1, "training length must be at least 1"),
 });
 
 interface Props {
@@ -46,6 +49,7 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
       description: uploadPostDto.description,
       city: uploadPostDto.city,
       type: uploadPostDto.type,
+      trainingLength: uploadPostDto.trainingLength,
     },
     resolver: yupResolver(schema),
   });
@@ -157,6 +161,31 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
         <SelectTrainingType
           control={control}
           sx={{ height: "5vh", width: "30vw" }}
+        />
+        <Controller
+          name="trainingLength"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type="number"
+              error={!!errors.trainingLength}
+              fullWidth
+              label="training length (minutes)"
+              placeholder="training length"
+              helperText={errors.trainingLength?.message}
+              variant="outlined"
+              sx={{ width: "30vw" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessAlarmOutlinedIcon />
+                  </InputAdornment>
+                ),
+                inputProps: { min: 0 },
+              }}
+            />
+          )}
         />
         <Controller
           name="description"

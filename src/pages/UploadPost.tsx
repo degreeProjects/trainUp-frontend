@@ -31,6 +31,7 @@ function UploadPost() {
           description: "",
           city: "",
           type: "",
+          trainingLength: 0,
           picture: undefined,
         }}
         submitText="Upload Post"

@@ -185,6 +185,9 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             <Typography variant="body2" color="white">
               Type: {post?.type}
             </Typography>
+            <Typography variant="body2" color="white">
+              Training Length: {post?.trainingLength} min
+            </Typography>
             <Typography
               variant="body2"
               color="white"
