@@ -14,7 +14,7 @@ import * as yup from "yup";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type CaloriesBurnInput } from "../common/types";
-import { calculateCaloriesBurn } from "../services/geminiService";
+import caloriesService from "../services/caloriesService";
 import CircularProgress from "@mui/material/CircularProgress";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
@@ -66,14 +66,11 @@ const CalculateCalories = observer(() => {
     setGeminiRes(undefined);
 
     try {
-      const res = await calculateCaloriesBurn(
-        data.type,
-        data.trainingLength,
-        data.height,
-        data.weight,
-        data.age
-      );
-      setGeminiRes(res);
+      const { request: calculateCaloriesBurn } = caloriesService.calculate(data);
+
+      const res = await calculateCaloriesBurn;
+
+      setGeminiRes(res.data);
     } catch (err) {
       setGeminiRes("Something went wrong, please try again");
     } finally {
