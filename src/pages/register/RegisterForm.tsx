@@ -4,6 +4,9 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import HeightRoundedIcon from "@mui/icons-material/HeightRounded";
+import MonitorWeightOutlinedIcon from "@mui/icons-material/MonitorWeightOutlined";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import {
   Autocomplete,
   Button,
@@ -35,6 +38,9 @@ const schema = yup.object({
   password: yup.string().required("password is requird"),
   fullName: yup.string().required("fullName is required"),
   homeCity: yup.string().optional(),
+  height: yup.number().required("height is required").min(1, "height must be positive"),
+  weight: yup.number().required("weight is required").min(1, "weight must be positive"),
+  age: yup.number().required("age is required").min(1, "age must be positive"),
 });
 
 const RegisterForm = observer(() => {
@@ -59,6 +65,9 @@ const RegisterForm = observer(() => {
       password: "",
       fullName: "",
       homeCity: "",
+      height: 170,
+      weight: 70,
+      age: 25,
     },
     resolver: yupResolver(schema),
   });
@@ -205,6 +214,81 @@ const RegisterForm = observer(() => {
                 },
               }}
               onChange={(_, data) => field.onChange(data)}
+            />
+          )}
+        />
+        <Controller
+          name="height"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type="number"
+              error={!!errors.height}
+              fullWidth
+              label="height (cm)"
+              sx={{ width: "30vw" }}
+              placeholder="height"
+              helperText={errors.height?.message}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <HeightRoundedIcon />
+                  </InputAdornment>
+                ),
+                inputProps: { min: 0 },
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="weight"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type="number"
+              error={!!errors.weight}
+              fullWidth
+              label="weight (kg)"
+              sx={{ width: "30vw" }}
+              placeholder="weight"
+              helperText={errors.weight?.message}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MonitorWeightOutlinedIcon />
+                  </InputAdornment>
+                ),
+                inputProps: { min: 0 },
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="age"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              type="number"
+              error={!!errors.age}
+              fullWidth
+              label="age"
+              sx={{ width: "30vw" }}
+              placeholder="age"
+              helperText={errors.age?.message}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <CalendarMonthOutlinedIcon />
+                  </InputAdornment>
+                ),
+                inputProps: { min: 0 },
+              }}
             />
           )}
         />

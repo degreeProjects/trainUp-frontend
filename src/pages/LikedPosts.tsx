@@ -85,13 +85,16 @@ const LikedPosts = observer(() => {
   };
 
   const onOpenEditPostDialog = async (post: IPost) => {
-    const picture = await fetchImageAndConvertToFile(post.image);
+    const picture = post.image
+      ? await fetchImageAndConvertToFile(post.image)
+      : undefined;
 
     setPostToEdit({
       picture,
       city: post.city,
       type: post.type,
-      description: post.description,
+      notes: post.notes ?? post.description ?? "",
+      trainingLength: post.trainingLength,
       postId: post._id,
     });
 

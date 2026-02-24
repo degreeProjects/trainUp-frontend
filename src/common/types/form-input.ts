@@ -3,10 +3,11 @@ export interface LoginDto {
   password: string;
 }
 export interface UploadPostDto {
-  description: string;
+  notes?: string;
   picture?: File;
   city: string;
   type: string;
+  trainingLength: number;
 }
 
 export interface PostToEdit extends UploadPostDto {
@@ -19,17 +20,24 @@ export interface RegisterDto {
   fullName: string;
   homeCity?: string;
   picture?: File;
+  height: number;
+  weight: number;
+  age: number;
 }
 
 export interface PostFormInput {
-  description: string;
+  notes?: string;
   city: string;
   type: string;
+  trainingLength: number;
 }
 
 export interface EditProfileFormInput {
   homeCity?: string;
   fullName: string;
+  height: number;
+  weight: number;
+  age: number;
 }
 
 export interface RegisterFormInput {
@@ -37,6 +45,9 @@ export interface RegisterFormInput {
   password: string;
   fullName: string;
   homeCity?: string;
+  height: number;
+  weight: number;
+  age: number;
 }
 
 export interface CaloriesBurnInput {

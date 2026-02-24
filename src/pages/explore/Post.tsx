@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -21,7 +22,7 @@ import PostActions from "./PostActions";
 import { config } from "../../config";
 import postsService from "../../services/postService";
 import type { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   post: IPost;
@@ -33,6 +34,10 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const navigate = useNavigate();
   const { user } = userStore;
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const notes = (post?.notes ?? post?.description ?? "").trim();
+  const hasAiTips = !!post?.aiTips && post.aiTips.trim().length > 0;
+  const caloriesSummary = post?.caloriesSummary?.trim();
+  const isAwaitingAi = !caloriesSummary && !hasAiTips;
 
   const handleImageClick = () => {
     setImageDialogOpen(true);
@@ -82,6 +87,40 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
   const showPostComments = () => {
     navigate(`/comments/${post?._id}`);
   };
+
+  useEffect(() => {
+    if (!isAwaitingAi) return;
+
+    let isMounted = true;
+    let cancelRequest: (() => void) | null = null;
+
+    const poll = async () => {
+      cancelRequest?.();
+      const { request, cancel } = postsService.getPost(post._id);
+      cancelRequest = cancel;
+      try {
+        const response = await request;
+        if (!isMounted) return;
+        const refreshed = response.data;
+        if (refreshed.caloriesSummary || refreshed.aiTips) {
+          setPosts((prev) =>
+            prev.map((p) => (p?._id === refreshed._id ? refreshed : p))
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    poll();
+    const interval = setInterval(poll, 7000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      cancelRequest?.();
+    };
+  }, [post._id, isAwaitingAi, setPosts]);
 
   return (
     <Grid item xs={12} sm={6} md={3}>
@@ -185,18 +224,82 @@ function Post({ post, setPosts, openEditPostDialog }: Props) {
             <Typography variant="body2" color="white">
               Type: {post?.type}
             </Typography>
-            <Typography
-              variant="body2"
-              color="white"
+            <Typography variant="body2" color="white">
+              Training Length: {post?.trainingLength} min
+            </Typography>
+          </Box>
+
+          {notes && (
+            <Box
               sx={{
-                mt: 0.5,
-                maxHeight: 60,
+                mt: 1,
+                p: 1.25,
+                borderRadius: 2,
+                backgroundColor: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                maxHeight: 100,
                 overflowY: "auto",
               }}
             >
-              Description: {post?.description}
-            </Typography>
-          </Box>
+              <Typography
+                variant="caption"
+                sx={{ color: "rgba(255,255,255,0.7)" }}
+              >
+                Notes - For AI Personal Trainer
+              </Typography>
+              <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                {notes}
+              </Typography>
+            </Box>
+          )}
+
+          {(caloriesSummary || hasAiTips || !caloriesSummary) && (
+            <Box
+              sx={{
+                mt: 1,
+                p: 1.25,
+                borderRadius: 2,
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05))",
+                border: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              {!caloriesSummary && !hasAiTips ? (
+                <Stack spacing={1.5} alignItems="center">
+                  <CircularProgress size={20} sx={{ color: "white" }} />
+                  <Typography variant="body2" color="white">
+                    AI coach is still generating insights...
+                  </Typography>
+                </Stack>
+              ) : null}
+              {caloriesSummary && (
+                <Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "rgba(255,255,255,0.7)" }}
+                  >
+                    AI Calories Estimate
+                  </Typography>
+                  <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                    {caloriesSummary}
+                  </Typography>
+                </Box>
+              )}
+              {hasAiTips && (
+                <Box sx={{ mt: caloriesSummary ? 1 : 0 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "rgba(255,255,255,0.7)" }}
+                  >
+                    AI Trainer Tips
+                  </Typography>
+                  <Typography variant="body2" color="white" sx={{ mt: 0.5 }}>
+                    {post?.aiTips}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          )}
 
           <Box
             sx={{

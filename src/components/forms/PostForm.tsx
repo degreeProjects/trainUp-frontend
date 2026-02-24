@@ -6,8 +6,12 @@ import {
   Box,
   Stack,
   Typography,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AccessAlarmOutlinedIcon from "@mui/icons-material/AccessAlarmOutlined";
+import { InputAdornment } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { type ChangeEvent, useState, useRef } from "react";
@@ -17,11 +21,21 @@ import type { PostFormInput, UploadPostDto } from "../../common/types";
 import ValidatedSelectCity from "./ValidatedSelectCity";
 import SelectTrainingType from "./SelectTrainingType";
 
-const schema = yup.object({
-  description: yup.string().required("description is required"),
-  city: yup.string().required("city is required"),
-  type: yup.string().required("training type is required"),
-});
+const schema = yup
+  .object({
+    notes: yup
+      .string()
+      .max(600, "notes must be under 600 characters")
+      .optional()
+      .default(""),
+    city: yup.string().required("city is required"),
+    type: yup.string().required("training type is required"),
+    trainingLength: yup
+      .number()
+      .required("training length is required")
+      .min(1, "training length must be at least 1"),
+  })
+  .required();
 
 interface Props {
   sx?: any;
@@ -40,14 +54,15 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isSubmitting },
   } = useForm<PostFormInput>({
     values: {
-      description: uploadPostDto.description,
+      notes: uploadPostDto.notes ?? "",
       city: uploadPostDto.city,
       type: uploadPostDto.type,
+      trainingLength: uploadPostDto.trainingLength,
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver<PostFormInput>(schema),
   });
 
   const changeProfileImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +99,7 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
       onSubmitFunc({
         picture: postImage!,
         ...data,
+        notes: data.notes ?? "",
       });
     }
   };
@@ -93,7 +109,17 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
   };
 
   return (
-    <form style={sx} onSubmit={handleSubmit(onSuccessSubmit, onErrorSubmit)}>
+    <>
+      <Backdrop
+        open={isSubmitting}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.modal + 1 }}
+      >
+        <Stack spacing={2} alignItems="center">
+          <CircularProgress color="inherit" />
+          <Typography variant="h6">Asking your AI coach...</Typography>
+        </Stack>
+      </Backdrop>
+      <form style={sx} onSubmit={handleSubmit(onSuccessSubmit, onErrorSubmit)}>
       <Stack spacing={3} alignItems="center">
         <input
           type="file"
@@ -159,16 +185,43 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
           sx={{ height: "5vh", width: "30vw" }}
         />
         <Controller
-          name="description"
+          name="trainingLength"
           control={control}
           render={({ field }) => (
             <TextField
               {...field}
-              error={!!errors.description}
+              type="number"
+              error={!!errors.trainingLength}
+              disabled={isSubmitting}
+              fullWidth
+              label="training length (minutes)"
+              placeholder="training length"
+              helperText={errors.trainingLength?.message}
+              variant="outlined"
+              sx={{ width: "30vw" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessAlarmOutlinedIcon />
+                  </InputAdornment>
+                ),
+                inputProps: { min: 0 },
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              error={!!errors.notes}
               multiline
               fullWidth
-              placeholder="Enter description here... "
-              helperText={errors.description?.message}
+              label="Notes - For AI Personal Trainer"
+              placeholder="How did the workout feel? Anything the AI coach should know?"
+              helperText={errors.notes?.message}
               rows={6}
               sx={{
                 borderRadius: 7,
@@ -177,7 +230,8 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
                   backgroundColor: "background.paper",
                 },
               }}
-              inputProps={{ sx: { color: "#53606D" } }}
+              inputProps={{ sx: { color: "#53606D" }, maxLength: 600 }}
+              disabled={isSubmitting}
             />
           )}
         />
@@ -185,6 +239,7 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
           variant="contained"
           type="submit"
           endIcon={<CloudUploadIcon />}
+          disabled={isSubmitting}
           sx={{
             color: "white",
             backgroundColor: "primary.main",
@@ -195,10 +250,11 @@ function PostForm({ sx, uploadPostDto, submitText, onSubmitFunc }: Props) {
             mt: 2,
           }}
         >
-          {submitText}
+          {isSubmitting ? "Working with AI..." : submitText}
         </Button>
       </Stack>
-    </form>
+      </form>
+    </>
   );
 }
 

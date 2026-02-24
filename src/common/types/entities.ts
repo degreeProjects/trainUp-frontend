@@ -1,9 +1,13 @@
 export interface IPost {
   _id: string;
-  description: string;
-  image: string;
+  description?: string;
+  notes?: string;
+  aiTips?: string;
+  caloriesSummary?: string;
+  image?: string;
   city: string;
   type: string;
+  trainingLength: number;
   user: IUser;
   comments: Array<IComment>;
   likes: Array<string>;
@@ -23,4 +27,7 @@ export interface IUser {
   fullName: string;
   homeCity?: string;
   profileImage?: string;
+  height: number;
+  weight: number;
+  age: number;
 }
