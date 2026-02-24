@@ -173,7 +173,7 @@ const Explore = observer(() => {
           }}
           ref={scrolledElementRef}
         >
-          {posts.map((post, index) => (
+          {posts?.length && posts.map((post, index) => (
             <Post
               post={post}
               setPosts={setPosts}

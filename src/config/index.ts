@@ -7,5 +7,4 @@ export const config = {
   publicFolderUrl: env.VITE_PUBLIC_FOLDER_URL,
   citiesApiUrl: env.VITE_CITIES_API_URL,
   googleClientId: env.VITE_GOOGLE_CLIENT_ID,
-  geminiApiKey: env.VITE_GEMINI_API_KEY,
 };
