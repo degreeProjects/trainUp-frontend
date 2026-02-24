@@ -17,6 +17,7 @@ import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { RegisterFormInput } from "../../common/types";
 import authService from "../../services/authService";
+import userStore from "../../common/store/user.store";
 import ProfileAvatarInput from "../../components/ProfileAvatarInput";
 import { observer } from "mobx-react-lite";
 import citiesStore from "../../common/store/cities.store";
@@ -69,10 +70,16 @@ const RegisterForm = observer(() => {
     });
 
     try {
-      await register;
-      navigate("/login");
+      const res = await register;
+
+      // Backend returns tokens on register — use them directly
+      document.cookie = `access_token=${res.data.accessToken}; path=/`;
+      document.cookie = `refresh_token=${res.data.refreshToken}; path=/`;
+      userStore.setUser(res.data.user);
+
+      navigate("/");
     } catch (err: any) {
-      if (err.response.status === 409) {
+      if (err.response?.status === 409) {
         setServerError(err.response.data);
       }
 
